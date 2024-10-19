@@ -1,14 +1,14 @@
-// swift-tools-version:6.0
+// swift-tools-version:5.7
 import PackageDescription
 
 let package = Package(
     name: "Beelearns-API",
     platforms: [
-       .macOS(.v13)
+       .macOS(.v12)
     ],
     dependencies: [
         // 💧 A server-side Swift web framework.
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.99.3"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.95.0"),
         // 🗄 An ORM for SQL and NoSQL databases.
         .package(url: "https://github.com/vapor/fluent.git", from: "4.9.0"),
         // 🌱 Fluent driver for Mongo.
@@ -16,7 +16,7 @@ let package = Package(
         // 🍃 An expressive, performant, and extensible templating language built for Swift.
         .package(url: "https://github.com/vapor/leaf.git", from: "4.3.0"),
         // 🔵 Non-blocking, event-driven networking for Swift. Used for custom executors
-        .package(url: "https://github.com/apple/swift-nio.git", from: "2.65.0"),
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.64.0"),
     ],
     targets: [
         .executableTarget(
@@ -39,11 +39,11 @@ let package = Package(
             ],
             swiftSettings: swiftSettings
         )
-    ],
-    swiftLanguageModes: [.v5]
+    ]
+//    swiftLanguageModes: [.v5]
 )
 
 var swiftSettings: [SwiftSetting] { [
-    .enableUpcomingFeature("DisableOutwardActorInference"),
-    .enableExperimentalFeature("StrictConcurrency"),
+//    .enableUpcomingFeature("DisableOutwardActorInference"),
+//    .enableExperimentalFeature("StrictConcurrency"),
 ] }
