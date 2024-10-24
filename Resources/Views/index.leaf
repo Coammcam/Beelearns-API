@@ -7,6 +7,19 @@
 </head>
 
 <body>
-  <h1>#(title)</h1>
+  <h1>Welcome to Admin panel</h1>
+  
+  <form action="/upload-data" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" value="file">
+    <br>
+    #(statusMessage)
+    <br>
+    <input type="submit" value="upload">      
+  </form>
+
+  #for(testObject in testObjects):
+    <p>#(testObject.id)</p>
+  #endfor
+  
 </body>
 </html>
