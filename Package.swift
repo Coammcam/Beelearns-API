@@ -17,6 +17,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/leaf.git", from: "4.3.0"),
         // 🔵 Non-blocking, event-driven networking for Swift. Used for custom executors
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.64.0"),
+        .package(url: "https://github.com/CoreOffice/CoreXLSX.git", from: "0.14.2"),
     ],
     targets: [
         .executableTarget(
@@ -28,6 +29,7 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio"),
+                .product(name: "CoreXLSX", package: "CoreXLSX"),
             ],
             swiftSettings: swiftSettings
         ),
