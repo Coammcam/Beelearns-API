@@ -17,9 +17,7 @@
     <input type="submit" value="upload">      
   </form>
 
-  #for(testObject in testObjects):
-    <p>#(testObject.id)</p>
-  #endfor
+
   
 </body>
 </html>
