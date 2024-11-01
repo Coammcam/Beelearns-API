@@ -13,29 +13,49 @@ struct WordController: RouteCollection{
     func boot(routes: Vapor.RoutesBuilder) throws {
         let words = routes.grouped("words")
         words.get(use: getAll)
-        words.post(use: create)
+        words.delete("deleteByDate", use: deleteBetweenDate)
+        words.get("byamount", use: getByAmount)
+//        words.post(use: create)
         
         words.group(":id") { aWord in
-            aWord.get(use: getByID)
+//            aWord.get(use: getByID)
             aWord.delete(use: deleteByID)
-            aWord.put(use: updateByID)
-        }
-        
-        words.group("deleteByDate"){ aWord in
-            aWord.delete(use: deleteBetweenDate)
+//            aWord.put(use: updateByID)
         }
     }
     
-    func getAll(req: Request) async throws -> [Word]{
-        return try await Word.query(on: req.db).all()
+    func getAll(req: Request) async throws -> [WordDTO] {
+        let words = try await Word.query(on: req.db).all()
+        return words.map{word in
+//            WordDTO(id: word.id, englishWord: word.englishWord, vietnameseMeaning: word.vietnameseMeaning)
+            WordDTO(englishWord: word.englishWord, vietnameseMeaning: word.vietnameseMeaning)
+        }
     }
     
     func getByID(req: Request) async throws -> Word{
         guard let aWord = try await Word.find(req.parameters.get("id"), on: req.db) else{
             throw Abort(.notFound)
         }
-        
         return aWord
+    }
+    
+    // words/byamount?amount=
+    func getByAmount(req: Request) async throws -> [WordDTO]{
+        guard var amount: Int = req.query["amount"] else { throw Abort(.badRequest) }
+        
+        let wordCount = try await Word.query(on: req.db).count()
+        
+        if(amount <= 0){
+            return []
+        }else if(amount > wordCount){
+            amount = wordCount
+        }
+        
+        let lowerRange = Int.random(in: 0...wordCount-amount)
+        let upperRange = lowerRange + amount
+        
+        let words = try await Word.query(on: req.db).range(lower: lowerRange, upper: upperRange-1).all()
+        return words.map({word in WordDTO(englishWord: word.englishWord, vietnameseMeaning: word.vietnameseMeaning)})
     }
     
     func create(req: Request) async throws -> Word{
@@ -58,7 +78,7 @@ struct WordController: RouteCollection{
         return .ok
     }
     
-    // deleteByDate/?fromDate=yyyy-mm-dd&toDate=yyyy-mm-dd
+    // words/deleteByDate/?fromDate=yyyy-mm-dd&toDate=yyyy-mm-dd
     func deleteBetweenDate(req: Request) async throws -> HTTPStatus{
         guard let fromDateString: String = req.query["fromDate"] else { throw Abort(.badRequest) }
         guard let toDateString: String = req.query["toDate"] else { throw Abort(.badRequest) }
