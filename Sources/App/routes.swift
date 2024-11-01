@@ -12,11 +12,14 @@ func routes(_ app: Application) throws {
     //    }
     
     app.get("admin") { req async throws in
-        //        try await req.view.render("index", AdminPageData(statusMessage: statusMessage, testObjects: testObjects))
+        //try await req.view.render("index", AdminPageData(statusMessage: statusMessage, testObjects: testObjects))
         try await req.view.render("index", ["statusMessage": statusMessage])
     }
     
+    // /upload-data?mode=
     app.post("upload-data") { req throws in
+        guard let mode: String = req.query["mode"] else {throw Abort(.badRequest)}
+        
         struct InputExcelSheet: Content{
             var file: File
         }
@@ -33,7 +36,14 @@ func routes(_ app: Application) throws {
             return req.redirect(to: "admin")
         }
         
-        _ = try parseXLSX(_: Word.self, XLSXData: xlsxData).create(on: req.db)
+        if (mode == "words"){
+            _ = try parseXLSX(_: Word.self, XLSXData: xlsxData).create(on: req.db)
+        }else if(mode == "truefalse"){
+            _ = try parseXLSX(TrueFalseQuestion.self, XLSXData: xlsxData).create(on: req.db)
+        }else{
+            throw Abort(.badRequest)
+        }
+        
         statusMessage = "done"
         return req.redirect(to: "admin")
     }
@@ -101,9 +111,7 @@ func routes(_ app: Application) throws {
         return "Password changed successfully."
     }
     
-    
-    //    try app.register(collection: TestModelController(app: app))
     try app.register(collection: WordController())
-    
     try app.register(collection: UserController())
+    try app.register(collection: TrueFalseQuestionController())
 }
