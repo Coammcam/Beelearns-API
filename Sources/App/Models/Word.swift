@@ -9,7 +9,7 @@ import Fluent
 import FluentMongoDriver
 import Vapor
 
-final class Word: Model, Content{
+final class Word: Model{
     static let schema: String = "words"
     
     @ID(custom: .id)
