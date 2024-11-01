@@ -16,8 +16,9 @@ public func configure(_ app: Application) async throws {
         connectionString: Environment.get("DATABASE_URL") ?? "mongodb://localhost:27017/vapor_database"
     ), as: .mongo)
 
-    app.migrations.add(createTestModel())
-    try await app.autoMigrate()
+    app.migrations.add(CreateWord())
+    app.migrations.add(CreateTrueFalseQuestion())
+//    try await app.autoMigrate()
 
     app.views.use(.leaf)
 
