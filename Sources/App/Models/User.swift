@@ -52,7 +52,6 @@ final class User: Model, Content {
     
     func toDTO() -> UserDTO {
         .init(
-            id: self.id,
             email: self.email,
             username: self.username,
 //            password: self.password,

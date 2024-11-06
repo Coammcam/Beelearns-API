@@ -8,7 +8,6 @@
 import Vapor
 
 struct UserDTO: Content {
-    var id: UUID?
     var email: String
     var username: String
 //    var password: String
@@ -19,7 +18,6 @@ struct UserDTO: Content {
     func toModel() -> User {
         let model = User()
         
-        model.id = self.id
         model.username = self.username
         model.email = self.email
         model.phone_number = self.phone_number

@@ -10,9 +10,12 @@ import Vapor
 struct UserController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let usersRoute = routes.grouped("user")
-        usersRoute.get(":id", use: getUser)
-        usersRoute.put(":id", use: updateUser)
-        usersRoute.delete(":id", use: deleteUser)
+        
+        usersRoute.group(":id"){ user in
+//            user.get(use: getUser)
+            user.put(use: updateUser)
+            user.delete(use: deleteUser)
+        }
     }
     
     func getUser(req: Request) throws -> EventLoopFuture<UserDTO> {
