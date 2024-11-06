@@ -66,7 +66,7 @@ func routes(_ app: Application) throws {
             }
     }
     
-    app.post("auth", "register") { req async throws -> UserDTO in
+    app.post("auth", "register") { req async throws -> String in
         let registerDTO = try req.content.decode(RegisterDTO.self)
         
         // Check existing user
@@ -79,17 +79,18 @@ func routes(_ app: Application) throws {
         let user = User(username: registerDTO.username, email: registerDTO.email, password: registerDTO.password)
         try await user.save(on: req.db)
         
-        return UserDTO(email: user.email, username: user.username)
+        return "Register successfully"
     }
     
-    app.post("auth", "login") { req async throws -> String in
+    app.post("auth", "login") { req async throws -> UserDTO in
         let loginDTO = try req.content.decode(LoginDTO.self)
         
-        let user = try await User.query(on: req.db).filter(\.$email == loginDTO.email).first()
-        guard let existingUser = user, existingUser.password == loginDTO.password else {
-            throw Abort(.unauthorized, reason: "Information not available.")
-        }
-        return "Login Successfully"
+        print(loginDTO)
+        
+        guard let user = try await User.query(on: req.db).filter(\.$email == loginDTO.email).filter(\.$password == loginDTO.password).first() else { throw Abort(.notFound) }
+        
+        
+        return user.toDTO()
     }
     
     app.put("auth", "change-password") {req async throws -> String in
@@ -114,4 +115,5 @@ func routes(_ app: Application) throws {
     try app.register(collection: WordController())
     try app.register(collection: UserController())
     try app.register(collection: TrueFalseQuestionController())
+    try app.register(collection: GrammarQuestionController())
 }
