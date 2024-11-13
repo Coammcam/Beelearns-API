@@ -116,4 +116,6 @@ func routes(_ app: Application) throws {
     try app.register(collection: UserController())
     try app.register(collection: TrueFalseQuestionController())
     try app.register(collection: GrammarQuestionController())
+    try app.register(collection: MusicController())
+    try app.register(collection: PodcastController())
 }
