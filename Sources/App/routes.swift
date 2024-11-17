@@ -18,8 +18,6 @@ func routes(_ app: Application) throws {
     
     // /upload-data?mode=
     app.post("upload-data") { req throws in
-        guard let mode: String = req.query["mode"] else {throw Abort(.badRequest)}
-        
         struct InputExcelSheet: Content{
             var file: File
         }
@@ -28,7 +26,7 @@ func routes(_ app: Application) throws {
         //        print(req.peerAddress?.ipAddress)
         
         let inputXlxs = try req.content.decode(InputExcelSheet.self)
-        
+        let mode: String = inputXlxs.file.filename
         let xlsxData = Data(buffer: inputXlxs.file.data)
         
         if(inputXlxs.file.extension != "xlsx"){
@@ -36,12 +34,25 @@ func routes(_ app: Application) throws {
             return req.redirect(to: "admin")
         }
         
-        if (mode == "words"){
+        switch mode{
+        case "word":
             _ = try parseXLSX(_: Word.self, XLSXData: xlsxData).create(on: req.db)
-        }else if(mode == "truefalse"){
+        case "truefalse":
             _ = try parseXLSX(TrueFalseQuestion.self, XLSXData: xlsxData).create(on: req.db)
-        }else{
-            throw Abort(.badRequest)
+        case "grammar":
+            break
+        case "movie":
+            break
+        case "music":
+            break
+        case "podcast":
+            break
+        case "IPA":
+            break
+        default:
+            statusMessage = "wrong file"
+            return req.redirect(to: "admin")
+//            throw Abort(.badRequest)
         }
         
         statusMessage = "done"
@@ -118,4 +129,6 @@ func routes(_ app: Application) throws {
     try app.register(collection: GrammarQuestionController())
     try app.register(collection: MusicController())
     try app.register(collection: PodcastController())
+    try app.register(collection: IPAController())
+    try app.register(collection: MovieController())
 }
