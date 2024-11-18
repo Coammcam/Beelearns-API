@@ -22,8 +22,8 @@ func routes(_ app: Application) throws {
             var file: File
         }
         
-        //        print(req.peerAddress?.hostname)
-        //        print(req.peerAddress?.ipAddress)
+//        print(req)
+//        print(req.peerAddress?.ipAddress)
         
         let inputXlxs = try req.content.decode(InputExcelSheet.self)
         let mode: String = inputXlxs.file.filename
@@ -34,20 +34,22 @@ func routes(_ app: Application) throws {
             return req.redirect(to: "admin")
         }
         
+        print(mode)
+        
         switch mode{
-        case "word":
+        case "word.xlsx":
             _ = try parseXLSX(_: Word.self, XLSXData: xlsxData).create(on: req.db)
-        case "truefalse":
+        case "truefalse.xlsx":
             _ = try parseXLSX(TrueFalseQuestion.self, XLSXData: xlsxData).create(on: req.db)
-        case "grammar":
+        case "grammar.xlsx":
             break
-        case "movie":
+        case "movie.xlsx":
+            _ = try parseXLSX(Movie.self, XLSXData: xlsxData).create(on: req.db)
+        case "music.xlsx":
+            _ = try parseXLSX(Music.self, XLSXData: xlsxData).create(on: req.db)
+        case "podcast.xlsx":
             break
-        case "music":
-            break
-        case "podcast":
-            break
-        case "IPA":
+        case "IPA.xlsx":
             break
         default:
             statusMessage = "wrong file"
