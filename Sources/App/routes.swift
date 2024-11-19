@@ -79,7 +79,7 @@ func routes(_ app: Application) throws {
             }
     }
     
-    app.post("auth", "register") { req async throws -> String in
+    app.post("auth", "register") { req async throws -> Response in
         let registerDTO = try req.content.decode(RegisterDTO.self)
         
         // Check existing user
@@ -92,7 +92,9 @@ func routes(_ app: Application) throws {
         let user = User(username: registerDTO.username, email: registerDTO.email, password: registerDTO.password)
         try await user.save(on: req.db)
         
-        return "Register successfully"
+        let response = ["message": "Register successfully"]
+        
+        return Response(status: .ok, body: .init(data: try JSONEncoder().encode(response)))
     }
     
     app.post("auth", "login") { req async throws -> UserDTO in
