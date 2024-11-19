@@ -108,7 +108,7 @@ func routes(_ app: Application) throws {
         return user.toDTO()
     }
     
-    app.put("auth", "change-password") {req async throws -> String in
+    app.put("auth", "change-password") {req async throws -> Response in
         let changepasswordDTO = try req.content.decode(ChangePasswordDTO.self)
         
         let user = try await User.query(on: req.db).filter(\.$email == changepasswordDTO.email).first()
@@ -124,7 +124,9 @@ func routes(_ app: Application) throws {
         existingUser.password = changepasswordDTO.newPassword
         try await existingUser.update(on: req.db)
         
-        return "Password changed successfully."
+        let response = ["message": "Password changed successfully."]
+        
+        return Response(status: .ok, body: .init(data: try JSONEncoder().encode(response)))
     }
     
     try app.register(collection: WordController())
