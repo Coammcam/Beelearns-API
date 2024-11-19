@@ -62,6 +62,12 @@ func parseXLSX<valueType>(_:valueType.Type, XLSXData: Data) throws -> [valueType
         return returnObject
     }
     
+//    do{
+//        
+//    }catch error{
+//        print (error)
+//    }
+//    
     if (valueType.self is Word.Type){
         for i in 0...rowCount-1{
             if(columnAStrings[i] != nil &&
@@ -109,13 +115,55 @@ func parseXLSX<valueType>(_:valueType.Type, XLSXData: Data) throws -> [valueType
                 columnDStrings[i] != nil &&
                 columnEStrings[i] != nil){
                 
-                returnObject.append(Music(title: columnAStrings[i]!, image_url: columnBStrings[i]!, description: columnCStrings[i]!, duration: columnDStrings[i]!, link_on_youtube: columnEStrings[i]!) as! valueType)
+                returnObject.append(Music(title: columnAStrings[i]!,
+                                          image_url: columnBStrings[i]!,
+                                          description: columnCStrings[i]!,
+                                          duration: columnDStrings[i]!,
+                                          link_on_youtube: columnEStrings[i]!) as! valueType)
             }
         }
     }else if(valueType.self is IPA.Type){
-        
+        for i in 0...rowCount-1{
+            if(columnAStrings[i] != nil &&
+               columnBStrings[i] != nil &&
+               columnCStrings[i] != nil &&
+               columnDStrings[i] != nil){
+                
+                returnObject.append(IPA(symbol: columnAStrings[i]!,
+                                        soundInMp3URL: columnBStrings[i]!,
+                                        exampleWord: columnCStrings[i]!,
+                                        vietnameseMeaning: columnDStrings[i]!) as! valueType)
+            }
+        }
     }else if(valueType.self is Podcast.Type){
-        
+        for i in 0...rowCount-1{
+            if(columnAStrings[i] != nil &&
+               columnBStrings[i] != nil &&
+               columnCStrings[i] != nil &&
+               columnDStrings[i] != nil &&
+               columnEStrings[i] != nil){
+                
+                returnObject.append(Podcast(title: columnAStrings[i]!,
+                                            image_url: columnBStrings[i]!,
+                                            description: columnCStrings[i]!,
+                                            duration: columnDStrings[i]!,
+                                            link_on_youtube: columnEStrings[i]!) as! valueType)
+            }
+        }
+    }else if(valueType.self is GrammarQuestion.Type){
+        for i in 0...rowCount-1{
+            if(columnAStrings[i] != nil &&
+               columnBStrings[i] != nil &&
+               columnCStrings[i] != nil &&
+               columnDStrings[i] != nil){
+
+                returnObject.append(GrammarQuestion(question: columnAStrings[i]!,
+                                                    correct_answer: "",
+                                                    meaning: columnBStrings[i]!,
+                                                    topic: columnCStrings[i]!,
+                                                    level: Int(columnDStrings[i]!) ?? 0) as! valueType)
+            }
+        }
     }
     
     return returnObject
