@@ -8,7 +8,7 @@
 import Vapor
 
 struct GrammarQuestionDTO: Content {
-    var question: [String]
+    var question: String
     var correct_answer: String
     var meaning: String
     var topic: String

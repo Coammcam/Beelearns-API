@@ -15,7 +15,7 @@ final class GrammarQuestion: Model, Content {
     var id: UUID?
     
     @Field(key: "question")
-    var question: [String]
+    var question: String
     
     @Field(key: "correct_answer")
     var correct_answer: String
@@ -37,7 +37,7 @@ final class GrammarQuestion: Model, Content {
     
     init() {}
     
-    init(id: UUID? = nil, question: Array<String>, correct_answer: String, meaning: String, topic: String, level: Int) {
+    init(id: UUID? = nil, question: String, correct_answer: String, meaning: String, topic: String, level: Int) {
         self.id = id
         self.question = question
         self.correct_answer = correct_answer
