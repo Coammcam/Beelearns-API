@@ -137,4 +137,5 @@ func routes(_ app: Application) throws {
     try app.register(collection: PodcastController())
     try app.register(collection: IPAController())
     try app.register(collection: MovieController())
+    try app.register(collection: QuestionController())
 }
