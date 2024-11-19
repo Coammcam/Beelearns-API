@@ -18,17 +18,15 @@ func routes(_ app: Application) throws {
     
     // /upload-data?mode=
     app.post("upload-data") { req throws in
-        guard let mode: String = req.query["mode"] else {throw Abort(.badRequest)}
-        
         struct InputExcelSheet: Content{
             var file: File
         }
         
-        //        print(req.peerAddress?.hostname)
-        //        print(req.peerAddress?.ipAddress)
+//        print(req)
+//        print(req.peerAddress?.ipAddress)
         
         let inputXlxs = try req.content.decode(InputExcelSheet.self)
-        
+        let mode: String = inputXlxs.file.filename
         let xlsxData = Data(buffer: inputXlxs.file.data)
         
         if(inputXlxs.file.extension != "xlsx"){
@@ -36,12 +34,27 @@ func routes(_ app: Application) throws {
             return req.redirect(to: "admin")
         }
         
-        if (mode == "words"){
+        print(mode)
+        
+        switch mode{
+        case "word.xlsx":
             _ = try parseXLSX(_: Word.self, XLSXData: xlsxData).create(on: req.db)
-        }else if(mode == "truefalse"){
+        case "truefalse.xlsx":
             _ = try parseXLSX(TrueFalseQuestion.self, XLSXData: xlsxData).create(on: req.db)
-        }else{
-            throw Abort(.badRequest)
+        case "grammar.xlsx":
+            break
+        case "movie.xlsx":
+            _ = try parseXLSX(Movie.self, XLSXData: xlsxData).create(on: req.db)
+        case "music.xlsx":
+            _ = try parseXLSX(Music.self, XLSXData: xlsxData).create(on: req.db)
+        case "podcast.xlsx":
+            break
+        case "IPA.xlsx":
+            break
+        default:
+            statusMessage = "wrong file"
+            return req.redirect(to: "admin")
+//            throw Abort(.badRequest)
         }
         
         statusMessage = "done"
@@ -120,4 +133,6 @@ func routes(_ app: Application) throws {
     try app.register(collection: GrammarQuestionController())
     try app.register(collection: MusicController())
     try app.register(collection: PodcastController())
+    try app.register(collection: IPAController())
+    try app.register(collection: MovieController())
 }

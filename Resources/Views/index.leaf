@@ -7,17 +7,21 @@
 </head>
 
 <body>
-  <h1>Welcome to Admin panel</h1>
-  
-  <form action="/upload-data" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" value="file">
-    <br>
-    #(statusMessage)
-    <br>
-    <input type="submit" value="upload">      
-  </form>
 
+  <header>
+    <h1>Welcome to Admin panel</h1>  
+  </header>
 
-  
+  <article>
+
+    <form action="/upload-data" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" value="file" accept=".xlsx">
+      <br>
+      #(statusMessage)
+      <br>
+      <input type="submit" value="upload">      
+    </form>
+
+  </article>  
 </body>
 </html>
