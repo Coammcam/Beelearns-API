@@ -42,15 +42,15 @@ func routes(_ app: Application) throws {
         case "truefalse.xlsx":
             _ = try parseXLSX(TrueFalseQuestion.self, XLSXData: xlsxData).create(on: req.db)
         case "grammar.xlsx":
-            break
+            _ = try parseXLSX(GrammarQuestion.self, XLSXData: xlsxData).create(on: req.db)
         case "movie.xlsx":
             _ = try parseXLSX(Movie.self, XLSXData: xlsxData).create(on: req.db)
         case "music.xlsx":
             _ = try parseXLSX(Music.self, XLSXData: xlsxData).create(on: req.db)
         case "podcast.xlsx":
-            break
+            _ = try parseXLSX(Podcast.self, XLSXData: xlsxData).create(on: req.db)
         case "IPA.xlsx":
-            break
+            _ = try parseXLSX(IPA.self, XLSXData: xlsxData).create(on: req.db)
         default:
             statusMessage = "wrong file"
             return req.redirect(to: "admin")
