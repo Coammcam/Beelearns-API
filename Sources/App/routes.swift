@@ -6,14 +6,65 @@ import Foundation
 func routes(_ app: Application) throws {
     
     var statusMessage = ""
-    //    struct AdminPageData: Encodable{
-    //        var statusMessage = ""
-    //        var testObjects = []
-    //    }
+    var mode = ""
     
-    app.get("admin") { req async throws in
-        //try await req.view.render("index", AdminPageData(statusMessage: statusMessage, testObjects: testObjects))
-        try await req.view.render("index", ["statusMessage": statusMessage])
+    app.get("admin") { req async throws -> View in
+        guard let listMode: String = req.query["list"] else { return try await req.view.render("index", ["title":"Admin"]) }
+        
+//        struct viewData: Codable{
+//            var title: String
+//            var mode: String = "test"
+//            var list
+//
+//            init(){
+//                switch self.mode{
+//                case "words":
+//                    self.list: [Word] = try await Word.query(on: req.db).all()
+//                default:
+//                    var list: [String] = ["blank","blank","blank"]
+//                }
+//            }
+//
+//        }
+        print(statusMessage)
+        
+        switch listMode{
+        case "words":
+            mode = listMode
+            struct viewData: Codable{
+                var title: String
+                var list: [Word]
+                var listMode: String
+            }
+            return try await req.view.render("index", viewData(title: listMode, list: try await Word.query(on: req.db).all(), listMode: listMode))
+        case "truefalse":
+            mode = listMode
+            struct viewData: Codable{
+                var title: String
+                var list: [TrueFalseQuestion]
+                var listMode: String
+            }
+            return try await req.view.render("index", viewData(title: listMode, list: try await TrueFalseQuestion.query(on: req.db).all(), listMode: listMode))
+        case "grammar":
+            mode = listMode
+            struct viewData: Codable{
+                var title: String
+                var list: [GrammarQuestion]
+                var listMode: String
+            }
+            return try await req.view.render("index", viewData(title: listMode, list: try await GrammarQuestion.query(on: req.db).all(), listMode: listMode))
+        case "music":
+            mode = listMode
+            struct viewData: Codable{
+                var title: String
+                var list: [Music]
+                var listMode: String
+            }
+            return try await req.view.render("index", viewData(title: listMode, list: try await Music.query(on: req.db).all(), listMode: listMode))
+        default:
+            return try await req.view.render("index", ["title":"Admin"])
+        }
+        
     }
     
     // /upload-data?mode=
@@ -25,27 +76,33 @@ func routes(_ app: Application) throws {
 //        print(req)
 //        print(req.peerAddress?.ipAddress)
         
+        var redirectString = "admin?list=\(mode)"
+        
         let inputXlxs = try req.content.decode(InputExcelSheet.self)
         let mode: String = inputXlxs.file.filename
         let xlsxData = Data(buffer: inputXlxs.file.data)
         
         if(inputXlxs.file.extension != "xlsx"){
             statusMessage = "not an excel sheet"
-            return req.redirect(to: "admin")
+            return req.redirect(to: redirectString)
         }
         
-        print(mode)
+//        print(mode)
         
         switch mode{
         case "word.xlsx":
+            redirectString = "admin?list=words"
             _ = try parseXLSX(_: Word.self, XLSXData: xlsxData).create(on: req.db)
         case "truefalse.xlsx":
+            redirectString = "admin?list=truefalse"
             _ = try parseXLSX(TrueFalseQuestion.self, XLSXData: xlsxData).create(on: req.db)
         case "grammar.xlsx":
+            redirectString = "admin?list=grammar"
             _ = try parseXLSX(GrammarQuestion.self, XLSXData: xlsxData).create(on: req.db)
         case "movie.xlsx":
             _ = try parseXLSX(Movie.self, XLSXData: xlsxData).create(on: req.db)
         case "music.xlsx":
+            redirectString = "admin?list=music"
             _ = try parseXLSX(Music.self, XLSXData: xlsxData).create(on: req.db)
         case "podcast.xlsx":
             _ = try parseXLSX(Podcast.self, XLSXData: xlsxData).create(on: req.db)
@@ -53,12 +110,12 @@ func routes(_ app: Application) throws {
             _ = try parseXLSX(IPA.self, XLSXData: xlsxData).create(on: req.db)
         default:
             statusMessage = "wrong file"
-            return req.redirect(to: "admin")
+            return req.redirect(to: redirectString)
 //            throw Abort(.badRequest)
         }
         
         statusMessage = "done"
-        return req.redirect(to: "admin")
+        return req.redirect(to: redirectString)
     }
     
     app.post("upload-file") { req -> EventLoopFuture<String> in
@@ -103,7 +160,6 @@ func routes(_ app: Application) throws {
         print(loginDTO)
         
         guard let user = try await User.query(on: req.db).filter(\.$email == loginDTO.email).filter(\.$password == loginDTO.password).first() else { throw Abort(.notFound) }
-        
         
         return user.toDTO()
     }
