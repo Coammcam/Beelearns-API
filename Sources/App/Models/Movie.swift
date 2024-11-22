@@ -16,6 +16,10 @@ final class Movie: Model{
     var id: ObjectId?
     @Field(key: "title")
     var title: String
+    @Field(key: "banner")
+    var banner: String
+    @Field(key: "poster")
+    var poster: String
     @Field(key: "description")
     var description: String
     @Field(key: "duration")
@@ -33,9 +37,11 @@ final class Movie: Model{
     
     init() {}
     
-    init(id: ObjectId? = nil, title: String, description: String, duration: String, genre: String, rating: String, year: String, createdAt: Date? = nil, updatedAt: Date? = nil) {
+    init(id: ObjectId? = nil, title: String, banner: String, poster: String, description: String, duration: String, genre: String, rating: String, year: String, createdAt: Date? = nil, updatedAt: Date? = nil) {
         self.id = id
         self.title = title
+        self.banner = banner
+        self.poster = poster
         self.description = description
         self.duration = duration
         self.genre = genre
@@ -46,6 +52,6 @@ final class Movie: Model{
     }
     
     func toDTO() -> MovieDTO{
-        return MovieDTO(title: title, description: description, duration: duration, genre: genre, rating: rating, year: year)
+        return MovieDTO(title: title, banner: banner, poster: poster,description: description, duration: duration, genre: genre, rating: rating, year: year)
     }
 }
