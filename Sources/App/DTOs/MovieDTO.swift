@@ -9,6 +9,8 @@ import Vapor
 
 struct MovieDTO: Content{
     var title: String?
+    var banner: String?
+    var poster: String?
     var description: String?
     var duration: String?
     var genre: String?
