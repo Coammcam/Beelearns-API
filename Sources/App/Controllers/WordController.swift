@@ -20,7 +20,7 @@ struct WordController: RouteCollection{
         words.group(":id") { aWord in
 //            aWord.get(use: getByID)
             aWord.delete(use: deleteByID)
-//            aWord.put(use: updateByID)
+            aWord.put(use: updateByID)
         }
     }
     
@@ -55,6 +55,8 @@ struct WordController: RouteCollection{
         let upperRange = lowerRange + amount
         
         let words = try await Word.query(on: req.db).range(lower: lowerRange, upper: upperRange-1).all()
+        print("word ques: ", words.count)
+        
         return words.map({word in WordDTO(englishWord: word.englishWord, vietnameseMeaning: word.vietnameseMeaning)})
     }
     
@@ -64,12 +66,17 @@ struct WordController: RouteCollection{
         return aWord
     }
     
-    func updateByID(req: Request) async throws -> Word{
-        guard var word = try await Word.find(req.parameters.get("id"), on: req.db) else { throw Abort(.notFound) }
-        let updatedWord = try req.content.decode(Word.self)
-        word = updatedWord
+    func updateByID(req: Request) async throws -> WordDTO {
+        guard let word = try await Word.find(req.parameters.get("id"), on: req.db) else { throw Abort(.notFound) }
+        
+        let updatedWord = try req.content.decode(WordDTO.self)
+        
+        word.englishWord = updatedWord.englishWord
+        word.vietnameseMeaning = updatedWord.vietnameseMeaning
+        
         try await word.save(on: req.db)
-        return word
+        
+        return updatedWord
     }
     
     func deleteByID(req: Request) async throws -> HTTPStatus{

@@ -13,4 +13,13 @@ struct WordDTO: Content{
 //    var id: ObjectId?
     var englishWord: String?
     var vietnameseMeaning: String?
+    
+    func toModel() -> Word {
+        let model = Word()
+        
+        model.englishWord = self.englishWord
+        model.vietnameseMeaning = self.vietnameseMeaning
+        
+        return model
+    }
 }

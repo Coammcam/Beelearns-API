@@ -9,17 +9,21 @@ import Fluent
 import FluentMongoDriver
 import Vapor
 
-final class Word: Model{
+final class Word: Model, Content{
     static let schema: String = "words"
     
     @ID(custom: .id)
     var id: ObjectId?
+    
     @Field(key: "english_word")
     var englishWord: String?
+    
     @Field(key: "vietnamese_meaning")
     var vietnameseMeaning: String?
+    
     @Timestamp(key: "created_at", on: .create)
     var createdAt: Date?
+    
     @Timestamp(key: "updated_at", on: .update)
     var deletedAt: Date?
     
