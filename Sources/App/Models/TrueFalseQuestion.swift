@@ -41,4 +41,8 @@ final class TrueFalseQuestion: Model{
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
+    
+    func toDTO() -> TrueFalseQuestionDTO{
+        return TrueFalseQuestionDTO(content: content, vietnameseMeaning: vietnameseMeaning, answer: answer, correction: correction, topic: topic)
+    }
 }
