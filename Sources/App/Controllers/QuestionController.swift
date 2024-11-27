@@ -27,22 +27,10 @@ struct QuestionController: RouteCollection {
         let wordAmount = Int(floor(secondHalf / 2))
         let truefalseAmount = Int(floor(secondHalf / 2))
         
-//        async let words = try await WordController().getByAmount(req: req.withQuery("amount", value: "\(wordAmount)"))
-//        async let truefalseQuestions = try await TrueFalseQuestionController().getByAmount(req: req.withQuery("amount", value: "\(truefalseAmount)"))
-//        async let grammarQuestions = try await GrammarQuestionController().getByAmount(req: req.withQuery("amount", value: "\(grammarAmount)"))
+        let words = try await Word.query(on: req.db).all().randomSample(count: wordAmount*4).map({$0.toDTO()})
+        let trueFalseQuestions = try await TrueFalseQuestion.query(on: req.db).all().randomSample(count: truefalseAmount).map({$0.toDTO()})
+        let grammarQuestions = try await GrammarQuestion.query(on: req.db).all().randomSample(count: grammarAmount).map({$0.toDTO()})
         
-        let wordsResult = try await Word.query(on: req.db).all().randomSample(count: wordAmount*4).map({word in WordDTO(englishWord: word.englishWord, vietnameseMeaning: word.vietnameseMeaning)})
-        let truefalseResult = try await TrueFalseQuestion.query(on: req.db).all().randomSample(count: truefalseAmount).map({ question in
-            TrueFalseQuestionDTO(content: question.content, vietnameseMeaning: question.vietnameseMeaning, answer: question.answer, correction: question.correction, topic: question.topic)
-        })
-        let grammarResult = try await GrammarQuestion.query(on: req.db).all().randomSample(count: grammarAmount).map({$0.toDTO()})
-        
-        print(grammarResult.count)
-        print(wordsResult.count)
-        print(truefalseResult.count)
-        
-        return CombinedQuestionDTO(
-            words: wordsResult, trueFalseQuestions: truefalseResult, grammarQuestions: grammarResult)
-        
+        return CombinedQuestionDTO(words: words, trueFalseQuestions: trueFalseQuestions, grammarQuestions: grammarQuestions)
     }
 }
