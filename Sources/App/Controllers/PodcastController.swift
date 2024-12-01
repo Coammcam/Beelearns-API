@@ -15,10 +15,10 @@ struct PodcastController: RouteCollection {
         poscastsRoute.get(use: getPodcasts)
         poscastsRoute.post(use: addPodcast)
         
-        poscastsRoute.group(":id") {music in
-            music.get(use: getPodcast)
-            music.put(use: updatePodcast)
-            music.delete(use: deletePodcast)
+        poscastsRoute.group(":id") { podcast in
+            podcast.get(use: getPodcast)
+            podcast.put(use: updatePodcast)
+            podcast.delete(use: deletePodcast)
         }
         
     }
@@ -57,6 +57,7 @@ struct PodcastController: RouteCollection {
         existingPodcast.image_url = updatedData.image_url
         existingPodcast.description = updatedData.description
         existingPodcast.duration = updatedData.duration
+        existingPodcast.views = updatedData.views
         existingPodcast.link_on_youtube = updatedData.link_on_youtube
         
         try await existingPodcast.save(on: req.db)
