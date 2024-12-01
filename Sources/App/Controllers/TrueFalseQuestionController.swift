@@ -15,6 +15,11 @@ struct TrueFalseQuestionController: RouteCollection{
         trueFalseQuestions.get(use: getAll)
         trueFalseQuestions.get("byamount", use: getByAmount)
         
+        trueFalseQuestions.group(":id") { truefalse in
+            truefalse.delete(use: deleteByID)
+            truefalse.put(use: updateByID)
+        }
+        
     }
     
     func getAll(req: Request) async throws -> [TrueFalseQuestionDTO]{
@@ -39,8 +44,33 @@ struct TrueFalseQuestionController: RouteCollection{
         let upperRange = lowerRange + amount
         
         let questions = try await TrueFalseQuestion.query(on: req.db).range(lower: lowerRange, upper: upperRange-1).all()
+        print("tf ques: ", questions.count)
+        
         return questions.map({ question in
             TrueFalseQuestionDTO(content: question.content, vietnameseMeaning: question.vietnameseMeaning, answer: question.answer, correction: question.correction, topic: question.topic)
         })
     }
+    
+    func deleteByID(req: Request) async throws -> HTTPStatus{
+        guard let deletedTrueFalse = try await TrueFalseQuestion.find(req.parameters.get("id"), on: req.db) else { throw Abort(.notFound) }
+        try await deletedTrueFalse.delete(on: req.db)
+        return .ok
+    }
+    
+    func updateByID(req: Request) async throws -> TrueFalseQuestionDTO {
+        guard var truefalse = try await TrueFalseQuestion.find(req.parameters.get("id"), on: req.db) else { throw Abort(.notFound) }
+        
+        let updatetruefalse = try req.content.decode(TrueFalseQuestionDTO.self)
+        
+        truefalse.content = updatetruefalse.content ?? ""
+        truefalse.vietnameseMeaning = updatetruefalse.vietnameseMeaning ?? ""
+        truefalse.answer = updatetruefalse.answer ?? ""
+        truefalse.correction = updatetruefalse.correction ?? ""
+        truefalse.topic = updatetruefalse.topic ?? ""
+        
+        try await truefalse.save(on: req.db)
+        
+        return updatetruefalse
+    }
+    
 }
