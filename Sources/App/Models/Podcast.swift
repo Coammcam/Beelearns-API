@@ -26,6 +26,9 @@ final class Podcast: Model, Content {
     @Field(key: "duration")
     var duration: String
     
+    @Field(key: "views")
+    var views: String
+    
     @Field(key: "link_on_youtube")
     var link_on_youtube: String
     
@@ -37,12 +40,13 @@ final class Podcast: Model, Content {
     
     init() {}
     
-    init(id: UUID? = nil, title: String, image_url: String, description: String, duration: String, link_on_youtube: String, createAt: Date? = nil, updatedAt: Date? = nil) {
+    init(id: UUID? = nil, title: String, image_url: String, description: String, duration: String, views: String ,link_on_youtube: String, createAt: Date? = nil, updatedAt: Date? = nil) {
         self.id = id
         self.title = title
         self.image_url = image_url
         self.description = description
         self.duration = duration
+        self.views = views
         self.link_on_youtube = link_on_youtube
         self.createAt = createAt
         self.updatedAt = updatedAt
@@ -54,6 +58,7 @@ final class Podcast: Model, Content {
             image_url: self.image_url,
             description: self.description,
             duration: self.duration,
+            views: self.views,
             link_on_youtube: self.link_on_youtube
         )
     }

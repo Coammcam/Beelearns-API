@@ -12,6 +12,7 @@ struct PodcastDTO: Content {
     var image_url: String
     var description: String
     var duration: String
+    var views: String
     var link_on_youtube: String
     
     func toModel() -> Podcast {
@@ -21,6 +22,7 @@ struct PodcastDTO: Content {
         model.image_url = self.image_url
         model.description = self.description
         model.duration = self.duration
+        model.views = self.views
         model.link_on_youtube = self.link_on_youtube
         
         return model

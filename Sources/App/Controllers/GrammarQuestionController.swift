@@ -14,6 +14,11 @@ struct GrammarQuestionController: RouteCollection {
         let grammarquestions = routes.grouped("grammarquestions")
         
         grammarquestions.get("byamount", use: getByAmount)
+        
+        grammarquestions.group(":id"){ grammar in
+            grammar.put(use: updateByID)
+            grammar.delete(use: deleteByID)
+        }
     }
     
     
@@ -39,5 +44,29 @@ struct GrammarQuestionController: RouteCollection {
         
     }
     
+    func updateByID(req: Request) async throws -> GrammarQuestionDTO {
+        guard let grammar = try await GrammarQuestion.find(req.parameters.get("id"), on: req.db) else { throw Abort(.notFound) }
+        
+        let updateGrammar = try req.content.decode(GrammarQuestionDTO.self)
+        
+        grammar.question = updateGrammar.question
+        grammar.correct_answer = updateGrammar.correct_answer
+        grammar.meaning = updateGrammar.meaning
+        grammar.topic = updateGrammar.topic
+        grammar.level = updateGrammar.level
+        
+        try await grammar.save(on: req.db)
+        
+        return updateGrammar
+        
+    }
+    
+    func deleteByID(req: Request) async throws -> HTTPStatus {
+        guard let grammar = try await GrammarQuestion.find(req.parameters.get("id"), on: req.db) else { throw Abort(.notFound) }
+        
+        try await grammar.delete(on: req.db)
+        
+        return .ok
+    }
     
 }

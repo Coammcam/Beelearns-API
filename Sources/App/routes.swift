@@ -11,21 +11,21 @@ func routes(_ app: Application) throws {
     app.get("admin") { req async throws -> View in
         guard let listMode: String = req.query["list"] else { return try await req.view.render("index", ["title":"Admin"]) }
         
-//        struct viewData: Codable{
-//            var title: String
-//            var mode: String = "test"
-//            var list
-//
-//            init(){
-//                switch self.mode{
-//                case "words":
-//                    self.list: [Word] = try await Word.query(on: req.db).all()
-//                default:
-//                    var list: [String] = ["blank","blank","blank"]
-//                }
-//            }
-//
-//        }
+        //        struct viewData: Codable{
+        //            var title: String
+        //            var mode: String = "test"
+        //            var list
+        //
+        //            init(){
+        //                switch self.mode{
+        //                case "words":
+        //                    self.list: [Word] = try await Word.query(on: req.db).all()
+        //                default:
+        //                    var list: [String] = ["blank","blank","blank"]
+        //                }
+        //            }
+        //
+        //        }
         print(statusMessage)
         
         switch listMode{
@@ -61,6 +61,23 @@ func routes(_ app: Application) throws {
                 var listMode: String
             }
             return try await req.view.render("index", viewData(title: listMode, list: try await Music.query(on: req.db).all(), listMode: listMode))
+        case "movie":
+            mode = listMode
+            struct viewData: Codable{
+                var title: String
+                var list: [Movie]
+                var listMode: String
+            }
+            return try await req.view.render("index", viewData(title: listMode, list: try await Movie.query(on: req.db).all(), listMode: listMode))
+        case "podcast":
+            mode = listMode
+            struct viewData: Codable{
+                var title: String
+                var list: [Podcast]
+                var listMode: String
+            }
+            return try await req.view.render("index", viewData(title: listMode, list: try await Podcast.query(on: req.db).all(), listMode: listMode))
+            
         default:
             return try await req.view.render("index", ["title":"Admin"])
         }
@@ -73,8 +90,8 @@ func routes(_ app: Application) throws {
             var file: File
         }
         
-//        print(req)
-//        print(req.peerAddress?.ipAddress)
+        //        print(req)
+        //        print(req.peerAddress?.ipAddress)
         
         var redirectString = "admin?list=\(mode)"
         
@@ -87,7 +104,7 @@ func routes(_ app: Application) throws {
             return req.redirect(to: redirectString)
         }
         
-//        print(mode)
+        //        print(mode)
         
         switch mode{
         case "word.xlsx":
@@ -111,7 +128,7 @@ func routes(_ app: Application) throws {
         default:
             statusMessage = "wrong file"
             return req.redirect(to: redirectString)
-//            throw Abort(.badRequest)
+            //            throw Abort(.badRequest)
         }
         
         statusMessage = "done"
