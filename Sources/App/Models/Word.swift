@@ -35,4 +35,8 @@ final class Word: Model, Content{
         self.englishWord = englishWord
         self.vietnameseMeaning = vietnameseMeaning
     }
+    
+    func toDTO() -> WordDTO{
+        return WordDTO(englishWord: englishWord, vietnameseMeaning: vietnameseMeaning)
+    }
 }

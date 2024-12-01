@@ -44,7 +44,6 @@ struct TrueFalseQuestionController: RouteCollection{
         let upperRange = lowerRange + amount
         
         let questions = try await TrueFalseQuestion.query(on: req.db).range(lower: lowerRange, upper: upperRange-1).all()
-        print("tf ques: ", questions.count)
         
         return questions.map({ question in
             TrueFalseQuestionDTO(content: question.content, vietnameseMeaning: question.vietnameseMeaning, answer: question.answer, correction: question.correction, topic: question.topic)

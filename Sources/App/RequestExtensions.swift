@@ -9,7 +9,7 @@ import Vapor
 
 extension Request {
     func withQuery(_ key: String, value: String) -> Request {
-        var modifiedRequest = self
+        let modifiedRequest = self
         modifiedRequest.url.query = "\(key)=\(value)"
         return modifiedRequest
     }
