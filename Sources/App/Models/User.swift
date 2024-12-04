@@ -32,6 +32,12 @@ final class User: Model, Content {
     @Field(key: "profile_image")
     var profile_image: String?
     
+    @Field(key: "heart")
+    var heart: Int?
+    
+    @Field(key: "honey_jar")
+    var honey_jar: Int?
+    
     @Timestamp(key: "created_at", on: .create)
     var createdAt: Date?
     
@@ -40,7 +46,7 @@ final class User: Model, Content {
     
     init() {}
     
-    init(id: UUID? = nil, username: String, email: String, password: String, phone_number: String? = nil, date_of_birth: String? = nil ,profile_image: String? = nil) {
+    init(id: UUID? = nil, username: String, email: String, password: String, phone_number: String? = nil, date_of_birth: String? = nil ,profile_image: String? = nil, heart: Int? = 5, honey_jar: Int? = 100) {
         self.id = id
         self.username = username
         self.email = email
@@ -48,6 +54,8 @@ final class User: Model, Content {
         self.phone_number = phone_number
         self.date_of_birth = date_of_birth
         self.profile_image = profile_image
+        self.heart = heart
+        self.honey_jar = honey_jar
     }
     
     func toDTO() -> UserDTO {
@@ -57,7 +65,9 @@ final class User: Model, Content {
 //            password: self.password,
             phone_number: self.phone_number ?? "",
             date_of_birth: self.date_of_birth ?? "",
-            profile_image: self.profile_image ?? ""
+            profile_image: self.profile_image ?? "",
+            heart: self.heart,
+            honey_jar: self.honey_jar
         )
     }
     

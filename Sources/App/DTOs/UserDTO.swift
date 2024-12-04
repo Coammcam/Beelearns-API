@@ -14,6 +14,8 @@ struct UserDTO: Content {
     var phone_number: String?
     var date_of_birth: String?
     var profile_image: String?
+    var heart: Int?
+    var honey_jar: Int?
     
     func toModel() -> User {
         let model = User()
@@ -24,6 +26,9 @@ struct UserDTO: Content {
         model.date_of_birth = self.date_of_birth
         model.profile_image = self.profile_image
 //        model.password = self.password
+        model.heart = self.heart
+        model.honey_jar = self.honey_jar
+        
         
         return model
     }
