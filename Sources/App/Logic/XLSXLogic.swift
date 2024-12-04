@@ -23,6 +23,7 @@ func parseXLSX<valueType>(_:valueType.Type, XLSXData: Data) throws -> [valueType
     var columnFStrings: [String?] = []
     var columnGStrings: [String?] = []
     var columnHStrings: [String?] = []
+    var columnIStrings: [String?] = []
     
     for wbk in try inXLSX.parseWorkbooks() {
         for (_, path) in try inXLSX.parseWorksheetPathsAndNames(workbook: wbk) {
@@ -63,6 +64,10 @@ func parseXLSX<valueType>(_:valueType.Type, XLSXData: Data) throws -> [valueType
                 columnHStrings = worksheet.cells(atColumns: [ColumnReference("H")!])
                     .map {columnFString in
                         return columnFString.stringValue(sharedStrings)
+                    }
+                columnIStrings = worksheet.cells(atColumns: [ColumnReference("I")!])
+                    .map {columnIString in
+                        return columnIString.stringValue(sharedStrings)
                     }
             }
         }
@@ -107,16 +112,20 @@ func parseXLSX<valueType>(_:valueType.Type, XLSXData: Data) throws -> [valueType
                 columnCStrings[i] != nil &&
                 columnDStrings[i] != nil &&
                 columnEStrings[i] != nil &&
-                columnFStrings[i] != nil){
+                columnFStrings[i] != nil &&
+                columnGStrings[i] != nil &&
+                columnHStrings[i] != nil &&
+                columnIStrings[i] != nil){
                 
                 returnObject.append(Movie(title: columnAStrings[i]!,
                                           banner: columnBStrings[i]!,
                                           poster: columnCStrings[i]!,
-                                          description: columnEStrings[i]!,
-                                          duration: columnFStrings[i]!,
-                                          genre: columnGStrings[i]!,
-                                          rating: columnHStrings[i]!,
-                                          year: columnDStrings[i]!) as! valueType)
+                                          description: columnDStrings[i]!,
+                                          duration: columnEStrings[i]!,
+                                          genre: columnFStrings[i]!,
+                                          rating: columnGStrings[i]!,
+                                          year: columnHStrings[i]!,
+                                          trailer: columnIStrings[i]!) as! valueType)
             }
         }
     }else if(valueType.self is Music.Type){
