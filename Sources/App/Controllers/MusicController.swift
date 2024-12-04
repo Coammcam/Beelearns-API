@@ -56,6 +56,7 @@ struct MusicController: RouteCollection {
         existingMusic.image_url = updatedData.image_url
         existingMusic.description = updatedData.description
         existingMusic.duration = updatedData.duration
+        existingMusic.artist = updatedData.artist
         existingMusic.link_on_youtube = updatedData.link_on_youtube
         
         try await existingMusic.save(on: req.db)

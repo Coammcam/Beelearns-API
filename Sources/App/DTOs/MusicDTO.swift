@@ -12,6 +12,7 @@ struct MusicDTO: Content {
     var image_url: String
     var description: String
     var duration: String
+    var artist: String
     var link_on_youtube: String
     
     func toModel() -> Music {
@@ -21,6 +22,7 @@ struct MusicDTO: Content {
         model.image_url = self.image_url
         model.description = self.description
         model.duration = self.duration
+        model.artist = self.artist
         model.link_on_youtube = self.link_on_youtube
         
         return model

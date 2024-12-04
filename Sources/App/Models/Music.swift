@@ -26,6 +26,9 @@ final class Music: Model, Content {
     @Field(key: "duration")
     var duration: String
     
+    @Field(key: "artist")
+    var artist: String
+    
     @Field(key: "link_on_youtube")
     var link_on_youtube: String
     
@@ -37,12 +40,13 @@ final class Music: Model, Content {
     
     init() {}
     
-    init(id: UUID? = nil, title: String, image_url: String, description: String, duration: String, link_on_youtube: String, createAt: Date? = nil, updatedAt: Date? = nil) {
+    init(id: UUID? = nil, title: String, image_url: String, description: String, duration: String, artist: String ,link_on_youtube: String, createAt: Date? = nil, updatedAt: Date? = nil) {
         self.id = id
         self.title = title
         self.image_url = image_url
         self.description = description
         self.duration = duration
+        self.artist = artist
         self.link_on_youtube = link_on_youtube
         self.createAt = createAt
         self.updatedAt = updatedAt
@@ -54,6 +58,7 @@ final class Music: Model, Content {
             image_url: self.image_url,
             description: self.description,
             duration: self.duration,
+            artist: self.artist,
             link_on_youtube: self.link_on_youtube
         )
     }
