@@ -125,13 +125,15 @@ func parseXLSX<valueType>(_:valueType.Type, XLSXData: Data) throws -> [valueType
                 columnBStrings[i] != nil &&
                 columnCStrings[i] != nil &&
                 columnDStrings[i] != nil &&
-                columnEStrings[i] != nil){
+                columnEStrings[i] != nil &&
+                columnFStrings[i] != nil){
                 
                 returnObject.append(Music(title: columnAStrings[i]!,
                                           image_url: columnBStrings[i]!,
                                           description: columnCStrings[i]!,
                                           duration: columnDStrings[i]!,
-                                          link_on_youtube: columnEStrings[i]!) as! valueType)
+                                          artist: columnEStrings[i]!,
+                                          link_on_youtube: columnFStrings[i]!) as! valueType)
             }
         }
     }else if(valueType.self is IPA.Type){
