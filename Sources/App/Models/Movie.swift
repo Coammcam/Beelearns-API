@@ -1,6 +1,6 @@
 //
 //  Movie.swift
-//  
+//
 //
 //  Created by HoangDus on 09/11/2024.
 //
@@ -55,6 +55,6 @@ final class Movie: Model{
     }
     
     func toDTO() -> MovieDTO{
-        return MovieDTO(title: title, banner: banner, poster: poster,description: description, duration: duration, genre: genre, rating: rating, year: year)
+        return MovieDTO(title: title, banner: banner, poster: poster,description: description, duration: duration, genre: genre, rating: rating, year: year, trailer: trailer)
     }
 }
