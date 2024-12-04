@@ -16,6 +16,7 @@ struct MovieDTO: Content{
     var genre: String?
     var rating: String?
     var year: String?
+    var trailer: String?
     
     func toModel() -> Movie {
         let model = Movie()
@@ -28,6 +29,7 @@ struct MovieDTO: Content{
         model.genre = self.genre ?? ""
         model.rating = self.rating ?? ""
         model.year = self.year ?? ""
+        model.trailer = self.trailer ?? ""
         
         return model
     }

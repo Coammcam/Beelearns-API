@@ -47,6 +47,7 @@ struct MovieController: RouteCollection{
         movie.genre = updateMovie.genre ?? ""
         movie.rating = updateMovie.rating ?? ""
         movie.year = updateMovie.year ?? ""
+        movie.trailer = updateMovie.trailer ?? ""
         
         try await movie.save(on: req.db)
         

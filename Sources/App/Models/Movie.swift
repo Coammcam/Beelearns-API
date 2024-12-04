@@ -30,6 +30,8 @@ final class Movie: Model{
     var rating: String
     @Field(key: "year")
     var year: String
+    @Field(key: "trailer")
+    var trailer: String
     @Timestamp(key: "created_at", on: .create)
     var createdAt: Date?
     @Timestamp(key: "updated_at", on: .update)
@@ -37,7 +39,7 @@ final class Movie: Model{
     
     init() {}
     
-    init(id: ObjectId? = nil, title: String, banner: String, poster: String, description: String, duration: String, genre: String, rating: String, year: String, createdAt: Date? = nil, updatedAt: Date? = nil) {
+    init(id: ObjectId? = nil, title: String, banner: String, poster: String, description: String, duration: String, genre: String, rating: String, year: String, trailer: String ,createdAt: Date? = nil, updatedAt: Date? = nil) {
         self.id = id
         self.title = title
         self.banner = banner
@@ -47,6 +49,7 @@ final class Movie: Model{
         self.genre = genre
         self.rating = rating
         self.year = year
+        self.trailer = trailer
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
