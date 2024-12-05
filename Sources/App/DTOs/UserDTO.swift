@@ -28,8 +28,12 @@ struct UserDTO: Content {
 //        model.password = self.password
         model.heart = self.heart
         model.honey_jar = self.honey_jar
-        
-        
         return model
     }
 }
+
+struct UserCurrency: Content{
+    let honeyJar: Int
+    let honeyComb: Int
+}
+
