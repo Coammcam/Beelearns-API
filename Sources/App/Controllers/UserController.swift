@@ -16,7 +16,11 @@ struct UserController: RouteCollection {
         
         usersRoute.group(":id"){ user in
             user.get(use: getUser)
-            
+        }
+        
+        usersRoute.group("currency", ":email"){ usersRoute in
+            usersRoute.get(use: getUserCurrency)
+            usersRoute.put(use: updateUserCurency)
         }
     }
     
@@ -30,6 +34,40 @@ struct UserController: RouteCollection {
             .map { user in
                 return user.toDTO()
             }
+    }
+    
+    func getUserCurrency(req: Request) async throws -> UserCurrency{
+        guard let userEmail = req.parameters.get("email") else {
+            throw Abort(.badRequest)
+        }
+        
+        guard let user = try await User.query(on: req.db)
+            .filter(\.$email == userEmail)
+            .first() else {
+            throw Abort(.notFound, reason: "User not found")
+        }
+        
+        return user.toCurrencyData()
+    }
+    
+    func updateUserCurency(req: Request) async throws -> UserCurrency{
+        guard let userEmail = req.parameters.get("email") else {
+            throw Abort(.badRequest)
+        }
+        
+        let newCurrencyData: UserCurrency = try req.content.decode(UserCurrency.self)
+                
+        guard let user = try await User.query(on: req.db)
+            .filter(\.$email == userEmail)
+            .first() else {
+            throw Abort(.notFound, reason: "User not found")
+        }
+        
+        user.heart = newCurrencyData.honeyComb
+        user.honey_jar = newCurrencyData.honeyJar
+        try await user.save(on: req.db)
+        
+        return user.toCurrencyData()
     }
     
     func updateUser(req: Request) async throws -> UserDTO {
