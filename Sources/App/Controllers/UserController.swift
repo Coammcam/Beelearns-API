@@ -35,6 +35,33 @@ struct UserController: RouteCollection {
     func updateUser(req: Request) async throws -> UserDTO {
         let updateData = try req.content.decode(UserDTO.self)
         
+        let app: Application = req.application
+        struct InputFile: Content{
+            var file: File
+        }
+        
+        let inputFile: InputFile? = try? req.content.decode(InputFile.self)
+        
+        var filePath: String? = nil
+        if let inputFile = inputFile {
+            let filename = inputFile.file.filename
+            let path = app.directory.publicDirectory + filename
+            filePath = filename
+            
+            if (!FileManager.default.fileExists(atPath: path)){
+                try await app.fileio.openFile(path: path, mode: .write, flags: .allowFileCreation(posixMode: 0x744), eventLoop: req.eventLoop)
+                    .tryFlatMap{handle in
+                        req.application.fileio.write(fileHandle: handle, buffer: inputFile.file.data, eventLoop: req.eventLoop)
+                            .flatMapThrowing{ _ in
+                                try handle.close()
+                            }
+                    }
+                    .get()
+            }
+        }
+        
+        
+        
         guard let user = try await User.query(on: req.db)
             .filter(\.$email == updateData.email)
             .first() else {
@@ -44,18 +71,21 @@ struct UserController: RouteCollection {
         if !updateData.username.isEmpty {
             user.username = updateData.username
         }
-        user.phone_number = updateData.phone_number ?? user.phone_number
-        user.profile_image = updateData.profile_image ?? user.profile_image
-        user.date_of_birth = updateData.date_of_birth ?? user.date_of_birth
+        user.phone_number = updateData.phoneNumber ?? user.phone_number
+        
+        if let filePath = filePath {
+            user.profile_image = Environment.get("IP")! + filePath
+        }
+        user.date_of_birth = updateData.dateOfBirth ?? user.date_of_birth
         
         try await user.save(on: req.db)
         
         return UserDTO(
             email: user.email,
             username: user.username,
-            phone_number: user.phone_number,
-            date_of_birth: user.date_of_birth,
-            profile_image: user.profile_image
+            phoneNumber: user.phone_number,
+            dateOfBirth: user.date_of_birth,
+            profileImageUrl: user.profile_image
         )
     }
     

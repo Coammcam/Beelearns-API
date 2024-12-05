@@ -11,9 +11,9 @@ struct UserDTO: Content {
     var email: String
     var username: String
 //    var password: String
-    var phone_number: String?
-    var date_of_birth: String?
-    var profile_image: String?
+    var phoneNumber: String?
+    var dateOfBirth: String?
+    var profileImageUrl: String?
     var heart: Int?
     var honey_jar: Int?
     
@@ -22,9 +22,9 @@ struct UserDTO: Content {
         
         model.username = self.username
         model.email = self.email
-        model.phone_number = self.phone_number
-        model.date_of_birth = self.date_of_birth
-        model.profile_image = self.profile_image
+        model.phone_number = self.phoneNumber
+        model.date_of_birth = self.dateOfBirth
+        model.profile_image = self.profileImageUrl
 //        model.password = self.password
         model.heart = self.heart
         model.honey_jar = self.honey_jar

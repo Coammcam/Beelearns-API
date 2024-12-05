@@ -17,6 +17,8 @@ struct CreateUser: Migration {
             .field("phone_number", .string, .required)
             .field("date_of_birth", .string)
             .field("profile_image", .string)
+            .field("heart", .int, .required)
+            .field("honey_jar", .int, .required)
             .field("created_at", .datetime, .required)
             .field("updated_at", .datetime)
             .create()

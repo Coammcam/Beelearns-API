@@ -63,9 +63,9 @@ final class User: Model, Content {
             email: self.email,
             username: self.username,
 //            password: self.password,
-            phone_number: self.phone_number ?? "",
-            date_of_birth: self.date_of_birth ?? "",
-            profile_image: self.profile_image ?? "",
+            phoneNumber: self.phone_number ?? "",
+            dateOfBirth: self.date_of_birth ?? "",
+            profileImageUrl: self.profile_image ?? "",
             heart: self.heart,
             honey_jar: self.honey_jar
         )

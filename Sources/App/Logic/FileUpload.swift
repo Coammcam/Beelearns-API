@@ -13,6 +13,7 @@ struct FileUploadMiddleware: AsyncMiddleware{
         struct InputFile: Content{
             var file: File
         }
+        print(request.content.self)
         let inputFile = try request.content.decode(InputFile.self)
         let path = app.directory.publicDirectory + inputFile.file.filename
         if (!FileManager.default.fileExists(atPath: path)){
