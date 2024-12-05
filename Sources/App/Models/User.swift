@@ -62,13 +62,16 @@ final class User: Model, Content {
         .init(
             email: self.email,
             username: self.username,
-//            password: self.password,
             phoneNumber: self.phone_number ?? "",
             dateOfBirth: self.date_of_birth ?? "",
             profileImageUrl: self.profile_image ?? "",
             heart: self.heart,
             honey_jar: self.honey_jar
         )
+    }
+    
+    func toCurrencyData() -> UserCurrency{
+        return UserCurrency(honeyJar: honey_jar ?? 0, honeyComb: heart ?? 0)
     }
     
 }
