@@ -31,6 +31,7 @@ struct QuestionController: RouteCollection {
         let trueFalseQuestions = try await TrueFalseQuestion.query(on: req.db).all().randomSample(count: truefalseAmount).map({$0.toDTO()})
         let grammarQuestions = try await GrammarQuestion.query(on: req.db).all().randomSample(count: grammarAmount).map({$0.toDTO()})
         
+//        sleep(5)
         return CombinedQuestionDTO(words: words, trueFalseQuestions: trueFalseQuestions, grammarQuestions: grammarQuestions)
     }
 }
