@@ -19,6 +19,8 @@ public func configure(_ app: Application) async throws {
     app.migrations.add(CreateWord())
     app.migrations.add(CreateTrueFalseQuestion())
 //    try await app.autoMigrate()
+    
+    app.leaf.tags["dateFormat"] = DateFormatTag()
 
     app.views.use(.leaf)
 
