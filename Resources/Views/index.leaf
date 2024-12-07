@@ -22,26 +22,14 @@
 
       <h1><a href="/admin" class="text-light text-decoration-none">BeeMin</a></h1>
 
-      <div id="loginForm" class="login-form mt-5">
-        <div class="d-flex justify-content-center">
-            <h2>Đăng nhập</h2>
-        </div>
-        <form id="login">
-          <input type="email" id="email" class="form-control mb-2" placeholder="Email" aria-label="Username" aria-describedby="basic-addon1" required>
-          <input type="password" id="password" class="form-control mb-3" placeholder="Password" aria-label="Username" aria-describedby="basic-addon1" required>
-          <div class="d-flex justify-content-center">
-            <button class="btn btn-primary" type="submit">Login</button>
-          </div>
-        </form>
-      </div>
-
-      <div id="tabs" class="tabs" style="display: none;">
+      <div id="tabs" class="tabs">
         <a href="/admin?list=words" class="nav-link" data-list="words">Words</a>
         <a href="/admin?list=truefalse" class="nav-link" data-list="truefalse">True False</a>
         <a href="/admin?list=grammar" class="nav-link" data-list="grammar">Grammar</a>
         <a href="/admin?list=music" class="nav-link" data-list="music">Music</a>
         <a href="/admin?list=movie" class="nav-link" data-list="movie">Movie</a>
         <a href="/admin?list=podcast" class="nav-link" data-list="podcast">Podcast</a>
+        <a href="/admin?list=user" class="nav-link" data-list="user">Users</a>
 
         <a href="#" class="nav-link" id="logoutBtn">Logout</a>
       </div>
@@ -56,13 +44,17 @@
             <div class="form-group w-25">
               <input class="form-control" type="file" name="file" value="file" id="formFile" accept=".xlsx">
             </div>
-            <p class="fs-5">
-              #(statusMessage)
-            </p>
-            <button class="btn btn-primary" type="submit" value="upload">Upload</button>
+            <div class="d-flex align-items-center justify-content-between mt-3">
+                <button class="btn btn-primary" type="submit" value="upload">Upload</button>
+                
+                <form id="searchForm" onsubmit="return false;">
+                    <input type="text" id="searchQuery" placeholder="Tìm kiếm..." oninput="searchList()" class="form-control w-25" />
+                </form>
+            </div>
           </form>
-        <br>  
-        <table class="table table-striped">
+        
+        <br>
+        <table class="table table-striped" id="resultTable">
             #if(listMode == "words"):
               <thead class="table-dark">
                 <tr>
@@ -217,7 +209,34 @@
                       </tr>
                     #endfor 
                   </tbody>
-            #endif         
+            #elseif(listMode == "user"):
+                  <thead class="table-dark">
+                    <tr>
+                      <th class="col">Name</th>
+                      <th class="col-2">Email</th>
+                      <th class="col-2">Honey Jar</th>
+                      <th class="col-2">Created at</th>
+                      <th class="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableBody">
+                    #for(item in list):
+                      <tr data-id="#(item.id)" data-name="#(item.username)" data-email="#(item.email)" data-honeyjar="#(item.honey_jar)" data-createdat="#(item.createdAt)">
+                        <td>#(item.username)</td>
+                        <td>#(item.email)</td>
+                        <td>
+                            #(item.honey_jar)
+                            <img src="/images/honey-jar.png" alt="Honey Jar" style="width: 30px; height: auto; margin-bottom: 4px">
+                        </td>
+                        <td>#dateFormat(item.createdAt, "dd/MM/yyyy")</td>
+                        <td>
+                          <button type="" class="btn btn-primary custom-btn">Update</button>
+                          <button type="" class="btn btn-danger custom-btn" onclick="">Delete</button>
+                        </td>
+                      </tr>
+                    #endfor
+                  </tbody>
+            #endif
         </table>
 
 
@@ -419,44 +438,10 @@
 <script>
   const apiBaseUrl = "http://167.71.173.13:9000";
 
-  let isLoggedIn = false;
-
-  document.getElementById('login').addEventListener('submit', function(event) {
-    event.preventDefault(); // Ngừng gửi form
-    let email = document.getElementById('email').value;
-    let password = document.getElementById('password').value;
-
-    if (email === "beeslearn@gmail.com" && password === "bees") {
-      localStorage.setItem('isLoggedIn', 'true');
-      document.getElementById('loginForm').style.display = 'none';
-      document.getElementById('tabs').style.display = 'block';
-    } else {
-      alert("Thông tin đăng nhập không đúng.");
-    }
-  });
-
-  window.onload = function() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    if (isLoggedIn) {
-      document.getElementById('loginForm').style.display = 'none';
-      document.getElementById('tabs').style.display = 'block';
-    } else {
-      document.getElementById('loginForm').style.display = 'block';
-      document.getElementById('tabs').style.display = 'none';
-    }
-  };
-
   document.getElementById('logoutBtn').addEventListener('click', function(event) {
-    event.preventDefault();
-
-    localStorage.removeItem('isLoggedIn');
-    
-    document.getElementById('tabs').style.display = 'none';
-    document.getElementById('loginForm').style.display = 'block';
-
-    window.location.href = '/admin';
+      event.preventDefault();
+      window.location.href = "http://167.71.173.13:9000/login";
   });
-
 
   document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
@@ -496,6 +481,28 @@
         console.error("Error deleting item:", error);
         alert("An error occurred. Please try again.");
       }
+    }
+  }
+    
+  function searchList() {
+    const query = document.getElementById('searchQuery').value.toLowerCase();
+    const tableBody = document.getElementById('tableBody');
+    const rows = tableBody.getElementsByTagName('tr');
+    
+    // Loop over each row in the table
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const username = row.getAttribute('data-name').toLowerCase();
+        const email = row.getAttribute('data-email').toLowerCase();
+        const honeyJar = row.getAttribute('data-honeyjar').toLowerCase();
+        const createdAt = row.getAttribute('data-createdat').toLowerCase();
+        
+        // Check if any column matches the search query
+        if (username.includes(query) || email.includes(query) || honeyJar.includes(query) || createdAt.includes(query)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
     }
   }
 
@@ -693,7 +700,7 @@
 
       if (response.ok) {
         alert("Movie updated successfully!");
-        document.location.reload(); // Reload the page to reflect the changes
+        document.location.reload();
       } else {
         alert("Failed to update the movie. Please try again.");
       }
@@ -746,7 +753,7 @@
 
       if (response.ok) {
         alert("Podcast updated successfully!");
-        document.location.reload(); // Reload the page to reflect the changes
+        document.location.reload();
       } else {
         alert("Failed to update the podcast. Please try again.");
       }

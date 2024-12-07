@@ -8,6 +8,10 @@ func routes(_ app: Application) throws {
     var statusMessage = ""
     var mode = ""
     
+    app.get("login") { req async throws -> View in
+        try await req.view.render("login")
+    }
+    
     app.get("admin") { req async throws -> View in
         guard let listMode: String = req.query["list"] else { return try await req.view.render("index", ["title":"Admin"]) }
         
@@ -77,6 +81,14 @@ func routes(_ app: Application) throws {
                 var listMode: String
             }
             return try await req.view.render("index", viewData(title: listMode, list: try await Podcast.query(on: req.db).all(), listMode: listMode))
+        case "user":
+            mode = listMode
+            struct viewData: Codable{
+                var title: String
+                var list: [User]
+                var listMode: String
+            }
+            return try await req.view.render("index", viewData(title: listMode, list: try await User.query(on: req.db).all(), listMode: listMode))
             
         default:
             return try await req.view.render("index", ["title":"Admin"])
