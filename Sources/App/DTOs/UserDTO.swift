@@ -35,5 +35,6 @@ struct UserDTO: Content {
 struct UserCurrency: Content{
     let honeyJar: Int
     let honeyComb: Int
+    let level: Int
 }
 

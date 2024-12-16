@@ -38,6 +38,9 @@ final class User: Model, Content {
     @Field(key: "honey_jar")
     var honey_jar: Int?
     
+    @OptionalField(key: "level")
+    var level: Int?
+    
     @Timestamp(key: "created_at", on: .create)
     var createdAt: Date?
     
@@ -46,16 +49,19 @@ final class User: Model, Content {
     
     init() {}
     
-    init(id: UUID? = nil, username: String, email: String, password: String, phone_number: String? = nil, date_of_birth: String? = nil ,profile_image: String? = nil, heart: Int? = 5, honey_jar: Int? = 100) {
+    init(id: UUID? = nil, email: String, username: String, password: String, phone_number: String? = nil, date_of_birth: String? = nil, profile_image: String? = nil, heart: Int? = 5, honey_jar: Int? = 100, level: Int? = 1, createdAt: Date? = nil, updatedAt: Date? = nil) {
         self.id = id
-        self.username = username
         self.email = email
+        self.username = username
         self.password = password
         self.phone_number = phone_number
         self.date_of_birth = date_of_birth
         self.profile_image = profile_image
         self.heart = heart
         self.honey_jar = honey_jar
+        self.level = level
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
     }
     
     func toDTO() -> UserDTO {
@@ -71,7 +77,7 @@ final class User: Model, Content {
     }
     
     func toCurrencyData() -> UserCurrency{
-        return UserCurrency(honeyJar: honey_jar ?? 0, honeyComb: heart ?? 0)
+        return UserCurrency(honeyJar: honey_jar ?? 0, honeyComb: heart ?? 0, level: level ?? 1)
     }
     
 }

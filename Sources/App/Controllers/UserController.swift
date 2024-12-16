@@ -65,6 +65,7 @@ struct UserController: RouteCollection {
         
         user.heart = newCurrencyData.honeyComb
         user.honey_jar = newCurrencyData.honeyJar
+        user.level = newCurrencyData.level
         try await user.save(on: req.db)
         
         return user.toCurrencyData()
