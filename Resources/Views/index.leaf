@@ -216,7 +216,6 @@
                       <th class="col-2">Email</th>
                       <th class="col-2">Honey Jar</th>
                       <th class="col-2">Created at</th>
-                      <th class="col">Action</th>
                     </tr>
                   </thead>
                   <tbody id="tableBody">
@@ -229,10 +228,6 @@
                             <img src="/images/honey-jar.png" alt="Honey Jar" style="width: 30px; height: auto; margin-bottom: 4px">
                         </td>
                         <td>#dateFormat(item.createdAt, "dd/MM/yyyy")</td>
-                        <td>
-                          <button type="" class="btn btn-primary custom-btn">Update</button>
-                          <button type="" class="btn btn-danger custom-btn" onclick="">Delete</button>
-                        </td>
                       </tr>
                     #endfor
                   </tbody>
