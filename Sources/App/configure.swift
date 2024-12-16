@@ -16,11 +16,11 @@ public func configure(_ app: Application) async throws {
         connectionString: Environment.get("DATABASE_URL")!
     ), as: .mongo)
 
-    app.migrations.add(CreateWord())
-    app.migrations.add(CreateTrueFalseQuestion())
+//    app.migrations.add(CreateWord())
+//    app.migrations.add(CreateTrueFalseQuestion())
 //    try await app.autoMigrate()
-    
     app.leaf.tags["dateFormat"] = DateFormatTag()
+    app.migrations.add(CreateUser())
 
     app.views.use(.leaf)
 

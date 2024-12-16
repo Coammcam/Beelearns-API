@@ -19,9 +19,11 @@ struct CreateUser: Migration {
             .field("profile_image", .string)
             .field("heart", .int, .required)
             .field("honey_jar", .int, .required)
+            .field("level", .int, .required)
             .field("created_at", .datetime, .required)
             .field("updated_at", .datetime)
-            .create()
+//            .create()
+            .update()
     }
     
     func revert(on database: Database) -> EventLoopFuture<Void> {
