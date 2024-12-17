@@ -214,6 +214,7 @@
                     <tr>
                       <th class="col">Name</th>
                       <th class="col-2">Email</th>
+                      <th class="col-2">Level</th>
                       <th class="col-2">Honey Jar</th>
                       <th class="col-2">Created at</th>
                     </tr>
@@ -223,10 +224,12 @@
                       <tr data-id="#(item.id)" data-name="#(item.username)" data-email="#(item.email)" data-honeyjar="#(item.honey_jar)" data-createdat="#(item.createdAt)">
                         <td>#(item.username)</td>
                         <td>#(item.email)</td>
+                        <td>#(item.level)</td>
                         <td>
                             #(item.honey_jar)
                             <img src="/images/honey-jar.png" alt="Honey Jar" style="width: 30px; height: auto; margin-bottom: 4px">
                         </td>
+                        
                         <td>#dateFormat(item.createdAt, "dd/MM/yyyy")</td>
                       </tr>
                     #endfor
