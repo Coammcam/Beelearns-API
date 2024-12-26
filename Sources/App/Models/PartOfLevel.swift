@@ -29,17 +29,14 @@ final class PartOfLevel: Model {
     }
     
     func toDTO(req: Request) async throws -> PartOfLevelDTO {
-        // Lấy `levelID` trực tiếp vì nó không phải là Optional
         let levelID = self.$level.id
         
-        // Truy vấn Level dựa trên levelID
         guard let matchingLevel = try await Level.query(on: req.db)
             .filter(\.$id == levelID)
             .first() else {
             throw Abort(.notFound, reason: "Level not found.")
         }
         
-        // Trả về DTO
         return PartOfLevelDTO(part: self.part, level_id: matchingLevel.level)
     }
     
