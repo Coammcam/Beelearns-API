@@ -21,6 +21,9 @@ public func configure(_ app: Application) async throws {
 //    try await app.autoMigrate()
     app.leaf.tags["dateFormat"] = DateFormatTag()
     app.migrations.add(CreateUser())
+    
+    app.migrations.add(CreateLevel())
+    app.migrations.add(CreatePartOfLevels())
 
     app.views.use(.leaf)
 

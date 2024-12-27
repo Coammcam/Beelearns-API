@@ -29,15 +29,9 @@ final class PartOfLevel: Model {
     }
     
     func toDTO(req: Request) async throws -> PartOfLevelDTO {
-        let levelID = self.$level.id
-        
-        guard let matchingLevel = try await Level.query(on: req.db)
-            .filter(\.$id == levelID)
-            .first() else {
-            throw Abort(.notFound, reason: "Level not found.")
-        }
-        
-        return PartOfLevelDTO(part: self.part, level_id: matchingLevel.level)
+        let level = try await self.$level.get(on: req.db)
+        return PartOfLevelDTO(part: self.part, level_id: level.level)
     }
+
     
 }

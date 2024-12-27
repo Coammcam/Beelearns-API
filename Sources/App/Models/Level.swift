@@ -12,6 +12,8 @@ enum Level_difficulty: Int, Codable {
     case level_1 = 1
     case level_2 = 2
     case level_3 = 3
+    case level_4 = 4
+    case level_5 = 5
 }
 
 final class Level: Model {
@@ -46,10 +48,10 @@ final class Level: Model {
     }
 }
 
-extension Level {
-    static func find(byDifficulty difficulty: Level_difficulty, on db: Database) async throws -> Level? {
-        try await Level.query(on: db)
-            .filter(\.$level == difficulty)
-            .first()
-    }
-}
+//extension Level {
+//    static func find(byDifficulty difficulty: Level_difficulty, on db: Database) async throws -> Level? {
+//        try await Level.query(on: db)
+//            .filter(\.$level == difficulty)
+//            .first()
+//    }
+//}
