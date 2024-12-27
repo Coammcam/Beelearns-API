@@ -17,6 +17,13 @@ struct LevelController: RouteCollection {
     
     func addLevel(req: Request) async throws -> LevelDTO {
         let levelDTO = try req.content.decode(LevelDTO.self)
+        
+        if let existingLevel = try await Level.query(on: req.db)
+            .filter(\.$level == levelDTO.level)
+            .first() {
+            throw Abort(.badRequest, reason: "Level \(existingLevel.level.rawValue) already exists.")
+        }
+        
         let level = levelDTO.toModel()
         try await level.save(on: req.db)
         return level.toDTO()
