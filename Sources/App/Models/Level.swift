@@ -1,32 +1,22 @@
 //
 //  Level.swift
-//  
+//
 //
 //  Created by Nguyễn Hưng on 25/12/2024.
 //
 
 import Fluent
 import Vapor
-
-enum Level_difficulty: Int, Codable {
-    case level_1 = 1
-    case level_2 = 2
-    case level_3 = 3
-    case level_4 = 4
-    case level_5 = 5
-}
+import FluentMongoDriver
 
 final class Level: Model {
     static let schema = "levels"
     
-    @ID(key: .id)
-    var id: UUID?
+    @ID(custom: .id)
+    var id: ObjectId?
     
     @Field(key: "level")
-    var level: Level_difficulty
-    
-    @Children(for: \.$level)
-    var PartOfLevels: [PartOfLevel]
+    var level: Int
     
     @Timestamp(key: "created_at", on: .create)
     var createdAt: Date?
@@ -36,7 +26,7 @@ final class Level: Model {
     
     init() {}
     
-    init(id: UUID? = nil, level: Level_difficulty, createdAt: Date? = nil, updatedAt: Date? = nil) {
+    init(id: ObjectId? = nil, level: Int, createdAt: Date? = nil, updatedAt: Date? = nil) {
         self.id = id
         self.level = level
         self.createdAt = createdAt
@@ -47,11 +37,3 @@ final class Level: Model {
         .init(level: self.level)
     }
 }
-
-//extension Level {
-//    static func find(byDifficulty difficulty: Level_difficulty, on db: Database) async throws -> Level? {
-//        try await Level.query(on: db)
-//            .filter(\.$level == difficulty)
-//            .first()
-//    }
-//}
