@@ -9,13 +9,14 @@ import Vapor
 
 struct PartOfLevelDTO: Content {
     var part: Int
-    var level_id: Level_difficulty
+    var level: Int
     
-    func toModel(levels: [Level]) -> PartOfLevel? {
-        guard let matchingLevel = levels.first(where: {$0.level == self.level_id }) else {
-            return nil
-        }
+    func toModel() -> PartOfLevel {
+        let model = PartOfLevel()
         
-        return PartOfLevel(id: nil, part: self.part, levelID: matchingLevel.id!)
+        model.part = self.part
+        model.level = self.level
+        
+        return model
     }
 }
