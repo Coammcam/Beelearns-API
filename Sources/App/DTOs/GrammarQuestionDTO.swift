@@ -18,7 +18,7 @@ struct GrammarQuestionDTO: Content {
         let model = GrammarQuestion()
         
         model.question = self.question
-        model.correct_answer = self.correct_answer
+        model.content = self.correct_answer
         model.meaning = self.meaning
         model.topic = self.topic
         model.level = self.level

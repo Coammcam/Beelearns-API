@@ -17,8 +17,8 @@ final class GrammarQuestion: Model, Content {
     @Field(key: "question")
     var question: String
     
-    @Field(key: "correct_answer")
-    var correct_answer: String
+    @Field(key: "content")
+    var content: String
     
     @Field(key: "meaning")
     var meaning: String
@@ -40,7 +40,7 @@ final class GrammarQuestion: Model, Content {
     init(id: UUID? = nil, question: String, correct_answer: String, meaning: String, topic: String, level: Int) {
         self.id = id
         self.question = question
-        self.correct_answer = correct_answer
+        self.content = correct_answer
         self.meaning = meaning
         self.topic = topic
         self.level = level
@@ -49,7 +49,7 @@ final class GrammarQuestion: Model, Content {
     func toDTO() -> GrammarQuestionDTO {
         .init(
             question: self.question,
-            correct_answer: self.correct_answer,
+            correct_answer: self.content,
             meaning: self.meaning,
             topic: self.topic,
             level: self.level
