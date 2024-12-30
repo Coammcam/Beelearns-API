@@ -7,31 +7,38 @@
 
 import Fluent
 import Vapor
+import FluentMongoDriver
 
 final class PartOfLevel: Model {
     static let schema = "part_of_levels"
     
-    @ID(key: .id)
-    var id: UUID?
+    @ID(custom: .id)
+    var id: ObjectId?
     
     @Field(key: "part")
     var part: Int
     
-    @Parent(key: "level_id")
-    var level: Level
+    @Field(key: "level")
+    var level: Int
+    
+    @Timestamp(key: "created_at", on: .create)
+    var createdAt: Date?
+    
+    @Timestamp(key: "updated_at", on: .update)
+    var updatedAt: Date?
     
     init() {}
     
-    init(id: UUID? = nil,part: Int ,levelID: UUID) {
+    
+    init(id: ObjectId? = nil, part: Int, level: Int, createdAt: Date? = nil, updatedAt: Date? = nil) {
         self.id = id
         self.part = part
-        self.$level.id = levelID
+        self.level = level
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
     }
     
-    func toDTO(req: Request) async throws -> PartOfLevelDTO {
-        let level = try await self.$level.get(on: req.db)
-        return PartOfLevelDTO(part: self.part, level_id: level.level)
+    func toDTO() -> PartOfLevelDTO {
+        .init(part: self.part, level: self.level)
     }
-
-    
 }

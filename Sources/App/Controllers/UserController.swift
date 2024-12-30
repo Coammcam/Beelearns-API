@@ -14,9 +14,9 @@ struct UserController: RouteCollection {
         usersRoute.put(use: updateUser)
         usersRoute.delete(use: deleteUser)
         
-        usersRoute.group(":id"){ user in
-            user.get(use: getUser)
-        }
+//        usersRoute.group(":id"){ user in
+//            user.get(use: getUser)
+//        }
         
         usersRoute.group("currency", ":email"){ usersRoute in
             usersRoute.get(use: getUserCurrency)
@@ -24,17 +24,17 @@ struct UserController: RouteCollection {
         }
     }
     
-    func getUser(req: Request) throws -> EventLoopFuture<UserDTO> {
-        guard let userId = req.parameters.get("id", as: UUID.self) else {
-            throw Abort(.badRequest, reason: "Invalid user ID")
-        }
-        
-        return User.find(userId, on: req.db)
-            .unwrap(or: Abort(.notFound, reason: "User not found"))
-            .map { user in
-                return user.toDTO()
-            }
-    }
+//    func getUser(req: Request) throws -> EventLoopFuture<UserDTO> {
+//        guard let userId = req.parameters.get("id", as: UUID.self) else {
+//            throw Abort(.badRequest, reason: "Invalid user ID")
+//        }
+//        
+//        return User.find(userId, on: req.db)
+//            .unwrap(or: Abort(.notFound, reason: "User not found"))
+//            .map { user in
+//                return user.toDTO()
+//            }
+//    }
     
     func getUserCurrency(req: Request) async throws -> UserCurrency{
         guard let userEmail = req.parameters.get("email") else {

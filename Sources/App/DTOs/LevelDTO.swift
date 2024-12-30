@@ -8,7 +8,7 @@
 import Vapor
 
 struct LevelDTO: Content {
-    var level: Level_difficulty
+    var level: Int
     
     func toModel() -> Level {
         let model = Level()

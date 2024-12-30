@@ -7,12 +7,13 @@
 
 import Fluent
 import Vapor
+import FluentMongoDriver
 
 final class User: Model, Content {
     static let schema = "users"
     
-    @ID(key: .id)
-    var id: UUID?
+    @ID(custom: .id)
+    var id: ObjectId?
     
     @Field(key: "email")
     var email: String
@@ -49,7 +50,7 @@ final class User: Model, Content {
     
     init() {}
     
-    init(id: UUID? = nil, email: String, username: String, password: String, phone_number: String? = nil, date_of_birth: String? = nil, profile_image: String? = nil, heart: Int? = 5, honey_jar: Int? = 100, level: Int? = 1, createdAt: Date? = nil, updatedAt: Date? = nil) {
+    init(id: ObjectId? = nil, email: String, username: String, password: String, phone_number: String? = nil, date_of_birth: String? = nil, profile_image: String? = nil, heart: Int? = 5, honey_jar: Int? = 100, level: Int? = 1, createdAt: Date? = nil, updatedAt: Date? = nil) {
         self.id = id
         self.email = email
         self.username = username
