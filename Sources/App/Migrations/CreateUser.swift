@@ -22,8 +22,8 @@ struct CreateUser: Migration {
             .field("level", .int, .required)
             .field("created_at", .datetime, .required)
             .field("updated_at", .datetime)
-//            .create()
-            .update()
+            .unique(on: "email")
+            .create()
     }
     
     func revert(on database: Database) -> EventLoopFuture<Void> {

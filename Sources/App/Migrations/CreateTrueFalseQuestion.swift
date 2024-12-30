@@ -18,7 +18,10 @@ struct CreateTrueFalseQuestion: AsyncMigration{
             .field("topic", .string)
             .field("created_at", .date)
             .field("updated_at", .date)
+            .unique(on: "content")
             .create()
+//            .deleteUnique(on: "content")
+//            .update()
     }
     
     func revert(on database: Database) async throws {

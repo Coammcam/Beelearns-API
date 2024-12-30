@@ -15,6 +15,7 @@ struct CreateWord: AsyncMigration{
             .field("vietnamese_meaning", .string, .required)
             .field("created_at", .date)
             .field("updated_at", .date)
+            .unique(on: "english_word")
             .create()
     }
     
