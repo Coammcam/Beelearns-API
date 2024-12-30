@@ -14,9 +14,6 @@ struct WordController: RouteCollection{
         let words = routes.grouped("words")
         words.get(use: getAll)
         words.delete("deleteByDate", use: deleteBetweenDate)
-        words.get("byamount", use: getByAmount)
-//        words.post(use: create)
-        
         words.group(":id") { aWord in
 //            aWord.get(use: getByID)
             aWord.delete(use: deleteByID)
@@ -24,12 +21,21 @@ struct WordController: RouteCollection{
         }
     }
     
+    // words?amount=
     func getAll(req: Request) async throws -> [WordDTO] {
-        let words = try await Word.query(on: req.db).all()
-        return words.map{word in
-//            WordDTO(id: word.id, englishWord: word.englishWord, vietnameseMeaning: word.vietnameseMeaning)
-            WordDTO(englishWord: word.englishWord, vietnameseMeaning: word.vietnameseMeaning)
+        guard let amount: Int = req.query["amount"] else {
+            let words = try await Word.query(on: req.db).all()
+            return words.map({word in word.toDTO()})
         }
+        
+        if(amount < 0){
+            let words = try await Word.query(on: req.db).all()
+            return words.map({word in word.toDTO()})
+        }
+        
+        let words = try await Word.query(on: req.db).all().randomSample(count: amount)
+        return words.map({word in word.toDTO()})
+
     }
     
     func getByID(req: Request) async throws -> Word{
@@ -37,27 +43,6 @@ struct WordController: RouteCollection{
             throw Abort(.notFound)
         }
         return aWord
-    }
-    
-    // words/byamount?amount=
-    func getByAmount(req: Request) async throws -> [WordDTO]{
-        guard var amount: Int = req.query["amount"] else { throw Abort(.badRequest) }
-        
-        let wordCount = try await Word.query(on: req.db).count()
-        
-        if(amount <= 0){
-            return []
-        }else if(amount > wordCount){
-            amount = wordCount
-        }
-        
-        let lowerRange = Int.random(in: 0...wordCount-amount)
-        let upperRange = lowerRange + amount
-        
-        let words = try await Word.query(on: req.db).range(lower: lowerRange, upper: upperRange-1).all()
-        print("word ques: ", words.count)
-        
-        return words.map({word in WordDTO(englishWord: word.englishWord, vietnameseMeaning: word.vietnameseMeaning)})
     }
     
     func create(req: Request) async throws -> Word{
