@@ -177,6 +177,7 @@ func routes(_ app: Application) throws {
         // create new user
         let user = User(email: registerDTO.email, username: registerDTO.username, password: registerDTO.password)
         try await user.save(on: req.db)
+        try await UserStudyData(userEmail: registerDTO.email).save(on: req.db)
         
         let response = ["message": "Register successfully"]
         
