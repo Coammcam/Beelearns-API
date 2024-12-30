@@ -7,6 +7,7 @@
 
 import Vapor
 import Fluent
+import FluentMongoDriver
 
 struct UserController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
@@ -18,57 +19,60 @@ struct UserController: RouteCollection {
 //            user.get(use: getUser)
 //        }
         
-        usersRoute.group("currency", ":email"){ usersRoute in
-            usersRoute.get(use: getUserCurrency)
-            usersRoute.put(use: updateUserCurency)
+        usersRoute.group("data", ":email"){ usersRoute in
+            usersRoute.get(use: getUserData)
+            usersRoute.put(use: updateUserData)
         }
     }
     
 //    func getUser(req: Request) throws -> EventLoopFuture<UserDTO> {
-//        guard let userId = req.parameters.get("id", as: UUID.self) else {
+//        guard let userId = req.parameters.get("id", as: ObjectId.self) else {
 //            throw Abort(.badRequest, reason: "Invalid user ID")
 //        }
-//        
+//
 //        return User.find(userId, on: req.db)
 //            .unwrap(or: Abort(.notFound, reason: "User not found"))
 //            .map { user in
 //                return user.toDTO()
 //            }
 //    }
-    
-    func getUserCurrency(req: Request) async throws -> UserCurrency{
+//
+    func getUserData(req: Request) async throws -> UserStudyDataDTO{
         guard let userEmail = req.parameters.get("email") else {
             throw Abort(.badRequest)
         }
         
-        guard let user = try await User.query(on: req.db)
-            .filter(\.$email == userEmail)
+        guard let userStudyData = try await UserStudyData.query(on: req.db)
+            .filter(\.$userEmail == userEmail)
             .first() else {
-            throw Abort(.notFound, reason: "User not found")
+            throw Abort(.notFound, reason: "User study data not found")
         }
         
-        return user.toCurrencyData()
+        return userStudyData.toDTO()
     }
     
-    func updateUserCurency(req: Request) async throws -> UserCurrency{
+    func updateUserData(req: Request) async throws -> UserStudyDataDTO{
         guard let userEmail = req.parameters.get("email") else {
             throw Abort(.badRequest)
         }
         
-        let newCurrencyData: UserCurrency = try req.content.decode(UserCurrency.self)
+        let newStudyData: UserStudyDataDTO = try req.content.decode(UserStudyDataDTO.self)
                 
-        guard let user = try await User.query(on: req.db)
-            .filter(\.$email == userEmail)
+        guard let userStudyData = try await UserStudyData.query(on: req.db)
+            .filter(\.$userEmail == userEmail)
             .first() else {
-            throw Abort(.notFound, reason: "User not found")
+            throw Abort(.notFound, reason: "User study data not found")
         }
         
-        user.heart = newCurrencyData.honeyComb
-        user.honey_jar = newCurrencyData.honeyJar
-        user.level = newCurrencyData.level
-        try await user.save(on: req.db)
+        userStudyData.honeyJar = newStudyData.honeyJar
+        userStudyData.score = newStudyData.score
+        userStudyData.heart = newStudyData.heart
+        userStudyData.level = newStudyData.level
+        userStudyData.part = newStudyData.part
+        userStudyData.exp = newStudyData.exp
+        try await userStudyData.save(on: req.db)
         
-        return user.toCurrencyData()
+        return userStudyData.toDTO()
     }
     
     func updateUser(req: Request) async throws -> UserDTO {
