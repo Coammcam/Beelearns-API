@@ -10,12 +10,9 @@ import Vapor
 struct UserDTO: Content {
     var email: String
     var username: String
-//    var password: String
     var phoneNumber: String?
     var dateOfBirth: String?
     var profileImageUrl: String?
-    var heart: Int?
-    var honey_jar: Int?
     
     func toModel() -> User {
         let model = User()
@@ -25,16 +22,16 @@ struct UserDTO: Content {
         model.phone_number = self.phoneNumber
         model.date_of_birth = self.dateOfBirth
         model.profile_image = self.profileImageUrl
-//        model.password = self.password
-        model.heart = self.heart
-        model.honey_jar = self.honey_jar
         return model
     }
 }
 
-struct UserCurrency: Content{
-    let honeyJar: Int
-    let honeyComb: Int
-    let level: Int
-}
 
+struct UserStudyDataDTO: Content{
+    var score: Int
+    var exp: Int
+    var part: Int
+    var level: Int
+    var heart: Int
+    var honeyJar: Int
+}
