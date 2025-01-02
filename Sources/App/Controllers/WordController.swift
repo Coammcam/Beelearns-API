@@ -58,6 +58,8 @@ struct WordController: RouteCollection{
         
         word.englishWord = updatedWord.englishWord
         word.vietnameseMeaning = updatedWord.vietnameseMeaning
+        word.topic = updatedWord.topic
+        word.level = updatedWord.level
         
         try await word.save(on: req.db)
         
