@@ -24,6 +24,8 @@ final class TrueFalseQuestion: Model{
     var correction: String?
     @Field(key: "topic")
     var topic: String?
+    @Field(key: "level")
+    var level: Int
     @Timestamp(key: "created_at", on: .create)
     var createdAt: Date?
     @Timestamp(key: "updated_at", on: .update)
@@ -31,18 +33,19 @@ final class TrueFalseQuestion: Model{
     
     init() {}
     
-    init(id: ObjectId? = nil, content: String, answer: String, vietnameseMeaning: String, correction: String? = nil, topic: String? = nil, createdAt: Date? = nil, updatedAt: Date? = nil) {
+    init(id: ObjectId? = nil, content: String, answer: String, vietnameseMeaning: String, correction: String? = nil, topic: String? = nil, level: Int, createdAt: Date? = nil, updatedAt: Date? = nil) {
         self.id = id
         self.content = content
         self.answer = answer
         self.vietnameseMeaning = vietnameseMeaning
         self.correction = correction
         self.topic = topic
+        self.level = level
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
     
     func toDTO() -> TrueFalseQuestionDTO{
-        return TrueFalseQuestionDTO(content: content, vietnameseMeaning: vietnameseMeaning, answer: answer, correction: correction, topic: topic)
+        return TrueFalseQuestionDTO(content: content, vietnameseMeaning: vietnameseMeaning, answer: answer, correction: correction, topic: topic, level: level)
     }
 }
