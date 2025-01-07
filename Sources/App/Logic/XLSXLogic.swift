@@ -90,13 +90,20 @@ func parseXLSX<valueType>(_:valueType.Type, XLSXData: Data) throws -> [valueType
     if (valueType.self is Word.Type){
         for i in 0...rowCount-1{
             if(columnAStrings[i] != nil &&
-               columnBStrings[i] != nil){
+               columnBStrings[i] != nil &&
+               columnCStrings[i] != nil &&
+               columnDStrings[i] != nil){
                 
                 returnObject.append(Word(englishWord: columnAStrings[i],
-                                         vietnameseMeaning: columnBStrings[i]) as! valueType)
+                                         vietnameseMeaning: columnBStrings[i],
+                                         topic: columnCStrings[i] ?? "",
+                                         level: Int(columnDStrings[i]!) ?? 0)
+                                    as! valueType)
             }
             if(i == columnAStringsCount ||
-               i == columnBStringsCount){
+               i == columnBStringsCount ||
+               i == columnCStringsCount ||
+               i == columnDStringsCount){
                 break
             }
         }
@@ -104,17 +111,24 @@ func parseXLSX<valueType>(_:valueType.Type, XLSXData: Data) throws -> [valueType
         for i in 0...rowCount-1{
             if (columnAStrings[i] != nil &&
                 columnBStrings[i] != nil &&
-                columnCStrings[i] != nil){
+                columnCStrings[i] != nil &&
+                columnDStrings[i] != nil &&
+                columnEStrings[i] != nil &&
+                columnFStrings[i] != nil){
                 
                 returnObject.append(TrueFalseQuestion(content: columnAStrings[i]!,
                                                       answer: columnCStrings[i]!,
                                                       vietnameseMeaning: columnBStrings[i]!,
                                                       correction: columnDStrings[i] ?? "",
-                                                      topic: "") as! valueType)
+                                                      topic: columnEStrings[i],
+                                                      level: Int(columnFStrings[i]!) ?? 0) as! valueType)
             }
             if(i == columnAStringsCount ||
                i == columnBStringsCount ||
-               i == columnCStringsCount){
+               i == columnCStringsCount ||
+               i == columnDStringsCount ||
+               i == columnEStringsCount ||
+               i == columnFStringsCount){
                 break
             }
         }

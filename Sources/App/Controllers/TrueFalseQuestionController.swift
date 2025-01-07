@@ -51,6 +51,7 @@ struct TrueFalseQuestionController: RouteCollection{
         truefalse.answer = updatetruefalse.answer ?? ""
         truefalse.correction = updatetruefalse.correction ?? ""
         truefalse.topic = updatetruefalse.topic ?? ""
+        truefalse.level = updatetruefalse.level ?? 0
         
         try await truefalse.save(on: req.db)
         

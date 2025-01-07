@@ -21,6 +21,12 @@ final class Word: Model{
     @Field(key: "vietnamese_meaning")
     var vietnameseMeaning: String?
     
+    @Field(key: "topic")
+    var topic: String
+    
+    @Field(key: "level")
+    var level: Int
+    
     @Timestamp(key: "created_at", on: .create)
     var createdAt: Date?
     
@@ -30,13 +36,15 @@ final class Word: Model{
     
     init() {}
     
-    init(id: ObjectId? = nil, englishWord: String? = nil, vietnameseMeaning: String? = nil) {
+    init(id: ObjectId? = nil, englishWord: String? = nil, vietnameseMeaning: String? = nil, topic: String, level: Int) {
         self.id = id
         self.englishWord = englishWord
         self.vietnameseMeaning = vietnameseMeaning
+        self.topic = topic
+        self.level = level
     }
     
     func toDTO() -> WordDTO{
-        return WordDTO(englishWord: englishWord, vietnameseMeaning: vietnameseMeaning)
+        return WordDTO(englishWord: englishWord, vietnameseMeaning: vietnameseMeaning, topic: topic, level: level)
     }
 }

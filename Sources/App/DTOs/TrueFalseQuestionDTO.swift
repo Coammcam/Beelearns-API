@@ -14,6 +14,7 @@ struct TrueFalseQuestionDTO: Content{
     var answer: String?
     var correction: String?
     var topic: String?
+    var level: Int?
     
     func toModel() -> TrueFalseQuestion {
         let model = TrueFalseQuestion()
@@ -23,6 +24,7 @@ struct TrueFalseQuestionDTO: Content{
         model.answer = self.answer ?? ""
         model.correction = self.correction
         model.topic = self.topic
+        model.level = self.level ?? 0
         
         return model
     }
