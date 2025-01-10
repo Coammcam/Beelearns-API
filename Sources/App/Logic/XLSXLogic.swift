@@ -112,7 +112,6 @@ func parseXLSX<valueType>(_:valueType.Type, XLSXData: Data) throws -> [valueType
             if (columnAStrings[i] != nil &&
                 columnBStrings[i] != nil &&
                 columnCStrings[i] != nil &&
-                columnDStrings[i] != nil &&
                 columnEStrings[i] != nil &&
                 columnFStrings[i] != nil){
                 
