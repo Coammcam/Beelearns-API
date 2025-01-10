@@ -58,7 +58,7 @@ final class UserStudyData: Model {
     }
     
     func toDTO() -> UserStudyDataDTO{
-        return UserStudyDataDTO(score: score, exp: exp, part: part, level: level, heart: heart, honeyJar: honeyJar)
+        return UserStudyDataDTO(score: score, exp: exp, part: part, level: level, honeyComb: heart, honeyJar: honeyJar)
     }
 }
 

@@ -66,7 +66,7 @@ struct UserController: RouteCollection {
         
         userStudyData.honeyJar = newStudyData.honeyJar
         userStudyData.score = newStudyData.score
-        userStudyData.heart = newStudyData.heart
+        userStudyData.heart = newStudyData.honeyComb
         userStudyData.level = newStudyData.level
         userStudyData.part = newStudyData.part
         userStudyData.exp = newStudyData.exp

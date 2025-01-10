@@ -32,6 +32,6 @@ struct UserStudyDataDTO: Content{
     var exp: Int
     var part: Int
     var level: Int
-    var heart: Int
+    var honeyComb: Int
     var honeyJar: Int
 }

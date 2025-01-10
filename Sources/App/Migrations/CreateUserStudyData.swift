@@ -16,7 +16,7 @@ struct CreateUserStudyData: AsyncMigration{
             .field("exp", .int, .required)
             .field("part", .int, .required)
             .field("level", .int, .required)
-            .field("heart", .int, .required)
+            .field("honey_comb", .int, .required)
             .field("honey_jar", .int, .required)
             .unique(on: "user_email")
             .create()
