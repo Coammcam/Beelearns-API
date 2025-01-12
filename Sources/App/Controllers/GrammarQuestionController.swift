@@ -32,7 +32,7 @@ struct GrammarQuestionController: RouteCollection {
         let questions = try await GrammarQuestion.query(on: req.db).filter(\.$level == levelNumber).all().randomSample(count: amount)
         
         return questions.map({ question in
-            GrammarQuestionDTO(question: question.question, correct_answer: question.content, meaning: question.meaning, topic: question.topic, level: question.level)
+            GrammarQuestionDTO(question: question.question, content: question.content, meaning: question.meaning, topic: question.topic, level: question.level)
         })
         
     }
@@ -43,7 +43,7 @@ struct GrammarQuestionController: RouteCollection {
         let updateGrammar = try req.content.decode(GrammarQuestionDTO.self)
         
         grammar.question = updateGrammar.question
-        grammar.content = updateGrammar.correct_answer
+        grammar.content = updateGrammar.content
         grammar.meaning = updateGrammar.meaning
         grammar.topic = updateGrammar.topic
         grammar.level = updateGrammar.level

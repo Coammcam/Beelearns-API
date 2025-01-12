@@ -9,7 +9,7 @@ import Vapor
 
 struct GrammarQuestionDTO: Content {
     var question: String
-    var correct_answer: String
+    var content: String
     var meaning: String
     var topic: String
     var level: Int
@@ -18,7 +18,7 @@ struct GrammarQuestionDTO: Content {
         let model = GrammarQuestion()
         
         model.question = self.question
-        model.content = self.correct_answer
+        model.content = self.content
         model.meaning = self.meaning
         model.topic = self.topic
         model.level = self.level

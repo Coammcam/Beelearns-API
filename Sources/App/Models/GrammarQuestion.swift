@@ -37,10 +37,10 @@ final class GrammarQuestion: Model, Content {
     
     init() {}
     
-    init(id: UUID? = nil, question: String, correct_answer: String, meaning: String, topic: String, level: Int) {
+    init(id: UUID? = nil, question: String, content: String, meaning: String, topic: String, level: Int) {
         self.id = id
         self.question = question
-        self.content = correct_answer
+        self.content = content
         self.meaning = meaning
         self.topic = topic
         self.level = level
@@ -49,7 +49,7 @@ final class GrammarQuestion: Model, Content {
     func toDTO() -> GrammarQuestionDTO {
         .init(
             question: self.question,
-            correct_answer: self.content,
+            content: self.content,
             meaning: self.meaning,
             topic: self.topic,
             level: self.level

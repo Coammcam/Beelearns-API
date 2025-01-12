@@ -241,8 +241,8 @@ func parseXLSX<valueType>(_:valueType.Type, XLSXData: Data) throws -> [valueType
                columnCStrings[i] != nil &&
                columnDStrings[i] != nil){
 
-                returnObject.append(GrammarQuestion(question: columnAStrings[i]!,
-                                                    correct_answer: "",
+                returnObject.append(GrammarQuestion(question: "",
+                                                    content: columnAStrings[i]!,
                                                     meaning: columnBStrings[i]!,
                                                     topic: columnCStrings[i]!,
                                                     level: Int(columnDStrings[i]!) ?? 0) as! valueType)
