@@ -13,7 +13,7 @@ struct GrammarQuestionController: RouteCollection {
     func boot(routes: Vapor.RoutesBuilder) throws {
         let grammarquestions = routes.grouped("grammarquestions")
         
-        grammarquestions.get(use: getByAmount)
+        grammarquestions.get(":level", use: getByLevelAndAmount)
         
         grammarquestions.group(":id"){ grammar in
             grammar.put(use: updateByID)
@@ -22,10 +22,14 @@ struct GrammarQuestionController: RouteCollection {
     }
     
     
-    func getByAmount(req: Request) async throws -> [GrammarQuestionDTO] {
-        guard var amount: Int = req.query["amount"] else { throw Abort(.badRequest) }
+    func getByLevelAndAmount(req: Request) async throws -> [GrammarQuestionDTO] {
+        guard let level = req.parameters.get("level") else { return [] }
         
-        let questions = try await GrammarQuestion.query(on: req.db).all().randomSample(count: amount)
+        guard let levelNumber = Int(level) else { throw Abort(.badRequest) }
+        
+        guard let amount: Int = req.query["amount"] else { throw Abort(.badRequest) }
+        
+        let questions = try await GrammarQuestion.query(on: req.db).filter(\.$level == levelNumber).all().randomSample(count: amount)
         
         return questions.map({ question in
             GrammarQuestionDTO(question: question.question, correct_answer: question.content, meaning: question.meaning, topic: question.topic, level: question.level)

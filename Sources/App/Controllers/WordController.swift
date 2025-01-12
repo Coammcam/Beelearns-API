@@ -12,7 +12,7 @@ import Foundation
 struct WordController: RouteCollection{
     func boot(routes: Vapor.RoutesBuilder) throws {
         let words = routes.grouped("words")
-        words.get(use: getAll)
+        words.get(":level", use: getByLevelAndAmount)
         words.delete("deleteByDate", use: deleteBetweenDate)
         words.group(":id") { aWord in
 //            aWord.get(use: getByID)
@@ -21,21 +21,24 @@ struct WordController: RouteCollection{
         }
     }
     
-    // words?amount=
-    func getAll(req: Request) async throws -> [WordDTO] {
+    // words/(level)?amount=
+    func getByLevelAndAmount(req: Request) async throws -> [WordDTO] {
+        guard let level = req.parameters.get("level") else { return [] }
+        
+        guard let levelNumber = Int(level) else { throw Abort(.badRequest) }
+        
         guard let amount: Int = req.query["amount"] else {
             let words = try await Word.query(on: req.db).all()
             return words.map({word in word.toDTO()})
         }
         
-        if(amount < 0){
-            let words = try await Word.query(on: req.db).all()
-            return words.map({word in word.toDTO()})
-        }
+//        if(amount < 0){
+//            let words = try await Word.query(on: req.db).all()
+//            return words.map({word in word.toDTO()})
+//        }
         
-        let words = try await Word.query(on: req.db).all().randomSample(count: amount)
+        let words = try await Word.query(on: req.db).filter(\.$level == levelNumber).all().randomSample(count: amount)
         return words.map({word in word.toDTO()})
-
     }
     
     func getByID(req: Request) async throws -> Word{

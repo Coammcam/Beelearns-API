@@ -12,7 +12,7 @@ import Fluent
 struct TrueFalseQuestionController: RouteCollection{
     func boot(routes: Vapor.RoutesBuilder) throws {
         let trueFalseQuestions = routes.grouped("truefalse")
-        trueFalseQuestions.get(use: getQuestion)
+        trueFalseQuestions.get(":level", use: getQuestionByLevelAndLevel)
         
         trueFalseQuestions.group(":id") { truefalse in
             truefalse.delete(use: deleteByID)
@@ -20,18 +20,22 @@ struct TrueFalseQuestionController: RouteCollection{
         }
     }
     
-    func getQuestion(req: Request) async throws -> [TrueFalseQuestionDTO]{
+    func getQuestionByLevelAndLevel(req: Request) async throws -> [TrueFalseQuestionDTO]{
+        guard let level = req.parameters.get("level") else { return [] }
+        
+        guard let levelNumber = Int(level) else { throw Abort(.badRequest) }
+        
         guard let amount: Int = req.query["amount"] else {
             let questions = try await TrueFalseQuestion.query(on: req.db).all()
             return questions.map({ question in question.toDTO() })
         }
         
-        if(amount < 0){
-            let questions = try await TrueFalseQuestion.query(on: req.db).all()
-            return questions.map({ question in question.toDTO() })
-        }
+//        if(amount < 0){
+//            let questions = try await TrueFalseQuestion.query(on: req.db).all()
+//            return questions.map({ question in question.toDTO() })
+//        }
         
-        let questions = try await TrueFalseQuestion.query(on: req.db).all().randomSample(count: amount)
+        let questions = try await TrueFalseQuestion.query(on: req.db).filter(\.$level == levelNumber).all().randomSample(count: amount)
         return questions.map({ question in question.toDTO() })
     }
     
