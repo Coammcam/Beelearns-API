@@ -11,8 +11,13 @@ import Fluent
 struct LevelController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
         let levelRoute = routes.grouped("level")
-        
+        levelRoute.get(use: getAllLevels)
         levelRoute.post(use: addLevel)
+    }
+    
+    func getAllLevels(req: Request) async throws -> [LevelDTO]{
+        let levels = try await Level.query(on: req.db).all()
+        return levels.map({$0.toDTO()})
     }
     
     func addLevel(req: Request) async throws -> LevelDTO {

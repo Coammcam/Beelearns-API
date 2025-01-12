@@ -7,12 +7,20 @@
 
 import Vapor
 import Fluent
+import FluentMongoDriver
 
 struct PartOfLevelController: RouteCollection {
     func boot(routes: any RoutesBuilder) throws {
         let partOfLevelRoute = routes.grouped("part_of_level")
-        
+        partOfLevelRoute.get(":level", use: getPartOfLevelByLevel)
         partOfLevelRoute.post(use: addPartOfLevel)
+    }
+    
+    func getPartOfLevelByLevel(req: Request) async throws -> [PartOfLevelDTO] {
+        guard let level = req.parameters.get("level") else { return [] }
+        guard let levelNumber = Int(level) else { throw Abort(.badRequest) }
+        let partsFromLevel = try await PartOfLevel.query(on: req.db).filter(\.$level == levelNumber).all()
+        return partsFromLevel.map({$0.toDTO()})
     }
     
     func addPartOfLevel(req: Request) async throws -> PartOfLevelDTO {
