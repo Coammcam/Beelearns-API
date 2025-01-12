@@ -116,31 +116,42 @@ func routes(_ app: Application) throws {
             return req.redirect(to: redirectString)
         }
         
-        //        print(mode)
+        var items = []
         
         switch mode{
         case "word.xlsx":
             redirectString = "admin?list=words"
-            _ = try parseXLSX(_: Word.self, XLSXData: xlsxData).create(on: req.db)
+            items = try parseXLSX(_: Word.self, XLSXData: xlsxData)
         case "truefalse.xlsx":
             redirectString = "admin?list=truefalse"
-            _ = try parseXLSX(TrueFalseQuestion.self, XLSXData: xlsxData).create(on: req.db)
+            items = try parseXLSX(TrueFalseQuestion.self, XLSXData: xlsxData)
+            print(items.count)
         case "grammar.xlsx":
             redirectString = "admin?list=grammar"
-            _ = try parseXLSX(GrammarQuestion.self, XLSXData: xlsxData).create(on: req.db)
+            items = try parseXLSX(GrammarQuestion.self, XLSXData: xlsxData)
         case "movie.xlsx":
-            _ = try parseXLSX(Movie.self, XLSXData: xlsxData).create(on: req.db)
+            redirectString = "admin?list=movie"
+            items = try parseXLSX(Movie.self, XLSXData: xlsxData)
         case "music.xlsx":
             redirectString = "admin?list=music"
-            _ = try parseXLSX(Music.self, XLSXData: xlsxData).create(on: req.db)
+            items = try parseXLSX(Music.self, XLSXData: xlsxData)
         case "podcast.xlsx":
-            _ = try parseXLSX(Podcast.self, XLSXData: xlsxData).create(on: req.db)
+            redirectString = "admin?list=podcast"
+            items = try parseXLSX(Podcast.self, XLSXData: xlsxData)
         case "IPA.xlsx":
-            _ = try parseXLSX(IPA.self, XLSXData: xlsxData).create(on: req.db)
+            redirectString = "admin?list=music"
+            _ = try parseXLSX(IPA.self, XLSXData: xlsxData)
         default:
             statusMessage = "wrong file"
             return req.redirect(to: redirectString)
             //            throw Abort(.badRequest)
+        }
+        
+        if(!items.isEmpty){
+            for item in items{
+                let modelItem: any Model = item as! any Model
+                _ = modelItem.create(on: req.db)
+            }
         }
         
         statusMessage = "done"
