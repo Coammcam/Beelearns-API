@@ -485,11 +485,11 @@
 
 
 <script>
-  const apiBaseUrl = "http://127.0.0.1:8080";
+  const apiBaseUrl = "http://167.172.69.114:9000";
 
   document.getElementById('logoutBtn').addEventListener('click', function(event) {
       event.preventDefault();
-      window.location.href = "http://167.71.173.13:9000/login";
+      window.location.href = "http://167.172.69.114:9000/login";
   });
     
 
