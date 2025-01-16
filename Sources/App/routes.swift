@@ -39,59 +39,74 @@ func routes(_ app: Application) throws {
                 var title: String
                 var list: [Word]
                 var listMode: String
+                var statusMessage: String
             }
-            return try await req.view.render("index", viewData(title: listMode, list: try await Word.query(on: req.db).all(), listMode: listMode))
+            return try await req.view.render("index", viewData(title: listMode, list: try await Word.query(on: req.db).all(), listMode: listMode, statusMessage: statusMessage))
         case "truefalse":
             mode = listMode
             struct viewData: Codable{
                 var title: String
                 var list: [TrueFalseQuestion]
                 var listMode: String
+                var statusMessage: String
             }
-            return try await req.view.render("index", viewData(title: listMode, list: try await TrueFalseQuestion.query(on: req.db).all(), listMode: listMode))
+            return try await req.view.render("index", viewData(title: listMode, list: try await TrueFalseQuestion.query(on: req.db).all(), listMode: listMode, statusMessage: statusMessage))
         case "grammar":
             mode = listMode
             struct viewData: Codable{
                 var title: String
                 var list: [GrammarQuestion]
                 var listMode: String
+                var statusMessage: String
             }
-            return try await req.view.render("index", viewData(title: listMode, list: try await GrammarQuestion.query(on: req.db).all(), listMode: listMode))
+            return try await req.view.render("index", viewData(title: listMode, list: try await GrammarQuestion.query(on: req.db).all(), listMode: listMode, statusMessage: statusMessage))
         case "music":
             mode = listMode
             struct viewData: Codable{
                 var title: String
                 var list: [Music]
                 var listMode: String
+                var statusMessage: String
             }
-            return try await req.view.render("index", viewData(title: listMode, list: try await Music.query(on: req.db).all(), listMode: listMode))
+            return try await req.view.render("index", viewData(title: listMode, list: try await Music.query(on: req.db).all(), listMode: listMode, statusMessage: statusMessage))
         case "movie":
             mode = listMode
             struct viewData: Codable{
                 var title: String
                 var list: [Movie]
                 var listMode: String
+                var statusMessage: String
             }
-            return try await req.view.render("index", viewData(title: listMode, list: try await Movie.query(on: req.db).all(), listMode: listMode))
+            return try await req.view.render("index", viewData(title: listMode, list: try await Movie.query(on: req.db).all(), listMode: listMode, statusMessage: statusMessage))
         case "podcast":
             mode = listMode
             struct viewData: Codable{
                 var title: String
                 var list: [Podcast]
                 var listMode: String
+                var statusMessage: String
             }
-            return try await req.view.render("index", viewData(title: listMode, list: try await Podcast.query(on: req.db).all(), listMode: listMode))
+            return try await req.view.render("index", viewData(title: listMode, list: try await Podcast.query(on: req.db).all(), listMode: listMode, statusMessage: statusMessage))
         case "user":
             mode = listMode
             struct viewData: Codable{
                 var title: String
                 var list: [User]
                 var listMode: String
+                var statusMessage: String
             }
-            return try await req.view.render("index", viewData(title: listMode, list: try await User.query(on: req.db).all(), listMode: listMode))
+            return try await req.view.render("index", viewData(title: listMode, list: try await User.query(on: req.db).all(), listMode: listMode, statusMessage: statusMessage))
+        case "upload":
+            mode = listMode
+            struct viewData: Codable{
+                var title: String
+                var listMode: String
+                var statusMessage: String
+            }
+            return try await req.view.render("index", viewData(title: listMode, listMode: listMode, statusMessage: statusMessage))
             
         default:
-            return try await req.view.render("index", ["title":"Admin"])
+            return try await req.view.render("index", ["title":"Admin", "statusMessage": statusMessage])
         }
         
     }
@@ -112,50 +127,39 @@ func routes(_ app: Application) throws {
         let xlsxData = Data(buffer: inputXlxs.file.data)
         
         if(inputXlxs.file.extension != "xlsx"){
-            statusMessage = "not an excel sheet"
+            statusMessage = "Bắt buộc phải là file .xlsx"
             return req.redirect(to: redirectString)
         }
         
-        var items = []
+        //        print(mode)
         
         switch mode{
         case "word.xlsx":
             redirectString = "admin?list=words"
-            items = try parseXLSX(_: Word.self, XLSXData: xlsxData)
+            _ = try parseXLSX(_: Word.self, XLSXData: xlsxData).create(on: req.db)
         case "truefalse.xlsx":
             redirectString = "admin?list=truefalse"
-            items = try parseXLSX(TrueFalseQuestion.self, XLSXData: xlsxData)
-            print(items.count)
+            _ = try parseXLSX(TrueFalseQuestion.self, XLSXData: xlsxData).create(on: req.db)
         case "grammar.xlsx":
             redirectString = "admin?list=grammar"
-            items = try parseXLSX(GrammarQuestion.self, XLSXData: xlsxData)
+            _ = try parseXLSX(GrammarQuestion.self, XLSXData: xlsxData).create(on: req.db)
         case "movie.xlsx":
-            redirectString = "admin?list=movie"
-            items = try parseXLSX(Movie.self, XLSXData: xlsxData)
+            _ = try parseXLSX(Movie.self, XLSXData: xlsxData).create(on: req.db)
         case "music.xlsx":
             redirectString = "admin?list=music"
-            items = try parseXLSX(Music.self, XLSXData: xlsxData)
+            _ = try parseXLSX(Music.self, XLSXData: xlsxData).create(on: req.db)
         case "podcast.xlsx":
-            redirectString = "admin?list=podcast"
-            items = try parseXLSX(Podcast.self, XLSXData: xlsxData)
+            _ = try parseXLSX(Podcast.self, XLSXData: xlsxData).create(on: req.db)
         case "IPA.xlsx":
-            redirectString = "admin?list=music"
-            _ = try parseXLSX(IPA.self, XLSXData: xlsxData)
+            _ = try parseXLSX(IPA.self, XLSXData: xlsxData).create(on: req.db)
         default:
-            statusMessage = "wrong file"
-            return req.redirect(to: redirectString)
+            statusMessage = "sai loại tệp"
+            return req.redirect(to: "\(redirectString)&status=\(statusMessage)")
             //            throw Abort(.badRequest)
         }
         
-        if(!items.isEmpty){
-            for item in items{
-                let modelItem: any Model = item as! any Model
-                _ = modelItem.create(on: req.db)
-            }
-        }
-        
-        statusMessage = "done"
-        return req.redirect(to: redirectString)
+        statusMessage = "thành công"
+        return req.redirect(to: "\(redirectString)&status=\(statusMessage)")
     }
     
     app.post("upload-file") { req -> EventLoopFuture<String> in

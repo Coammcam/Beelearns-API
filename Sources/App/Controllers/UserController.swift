@@ -64,12 +64,32 @@ struct UserController: RouteCollection {
             throw Abort(.notFound, reason: "User study data not found")
         }
         
-        userStudyData.honeyJar = newStudyData.honeyJar
-        userStudyData.score = newStudyData.score
-        userStudyData.heart = newStudyData.honeyComb
-        userStudyData.level = newStudyData.level
-        userStudyData.part = newStudyData.part
-        userStudyData.exp = newStudyData.exp
+//        userStudyData.honeyJar = newStudyData.honeyJar
+//        userStudyData.score = newStudyData.score
+//        userStudyData.heart = newStudyData.honeyComb
+//        userStudyData.level = newStudyData.level
+//        userStudyData.part = newStudyData.part
+//        userStudyData.exp = newStudyData.exp
+        
+        if userStudyData.honeyJar != newStudyData.honeyJar {
+                userStudyData.honeyJar = newStudyData.honeyJar
+            }
+        if userStudyData.score != newStudyData.score {
+            userStudyData.score = newStudyData.score
+        }
+        if userStudyData.heart != newStudyData.honeyComb {
+            userStudyData.heart = newStudyData.honeyComb
+        }
+        if userStudyData.level != newStudyData.level {
+            userStudyData.level = newStudyData.level
+        }
+        if userStudyData.part != newStudyData.part {
+            userStudyData.part = newStudyData.part
+        }
+        if userStudyData.exp != newStudyData.exp {
+            userStudyData.exp = newStudyData.exp
+        }
+        
         try await userStudyData.save(on: req.db)
         
         return userStudyData.toDTO()

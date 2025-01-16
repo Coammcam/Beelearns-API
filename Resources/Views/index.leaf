@@ -40,6 +40,7 @@
     <div class="content" id="content">
 
       #if(listMode):
+        #if(listMode != "user"):
         <form action="/upload-data" method="post" enctype="multipart/form-data">
             <div class="form-group w-25">
               <input class="form-control" type="file" name="file" value="file" id="formFile" accept=".xlsx">
@@ -52,6 +53,15 @@
                 </form>
             </div>
           </form>
+        #endif
+        
+        #if(listMode == "user"):
+            <div class="d-flex align-items-center justify-content-between mt-3">
+                <form id="searchForm" onsubmit="return false;">
+                    <input type="text" id="searchQuery" placeholder="Tìm kiếm..." oninput="searchList()" class="form-control" />
+                </form>
+            </div>
+        #endif
         
         <br>
         <table class="table table-striped" id="resultTable">
@@ -114,7 +124,7 @@
                   <tbody>
                     #for(item in list):
                       <tr>
-                        <td>#(item.content)</td>
+                        <td>#(item.question)</td>
                         <td>#(item.meaning)</td>
                         <td>#(item.topic)</td>
                         <td>#(item.level)</td>
@@ -213,10 +223,9 @@
                   <thead class="table-dark">
                     <tr>
                       <th class="col">Name</th>
-                      <th class="col-2">Email</th>
-                      <th class="col-2">Level</th>
-                      <th class="col-2">Honey Jar</th>
-                      <th class="col-2">Created at</th>
+                      <th class="col">Email</th>
+                      <th class="col">Created at</th>
+                      <th class="col"></th>
                     </tr>
                   </thead>
                   <tbody id="tableBody">
@@ -224,13 +233,11 @@
                       <tr data-id="#(item.id)" data-name="#(item.username)" data-email="#(item.email)" data-honeyjar="#(item.honey_jar)" data-createdat="#(item.createdAt)">
                         <td>#(item.username)</td>
                         <td>#(item.email)</td>
-                        <td>#(item.level)</td>
-                        <td>
-                            #(item.honey_jar)
-                            <img src="/images/honey-jar.png" alt="Honey Jar" style="width: 30px; height: auto; margin-bottom: 4px">
-                        </td>
                         
                         <td>#dateFormat(item.createdAt, "dd/MM/yyyy")</td>
+                        <td>
+                            <a href="#" class="text-primary text-decoration-underline" onclick="handleSeeDetail(event)">See detail</a>
+                        </td>
                       </tr>
                     #endfor
                   </tbody>
@@ -423,6 +430,50 @@
           </div>
         </div>
         
+        <div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5
+                            class="modal-title" id="userDetailModalLabel">User Details: <span id="modalEmail"></span>
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="userDetailForm">
+                            <div class="mb-3">
+                                <label for="part" class="form-label">Part:</label>
+                                <input type="text" class="form-control" id="part" name="part" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="heart" class="form-label">Heart:</label>
+                                <input type="text" class="form-control" id="heart" name="heart" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="honeyJar" class="form-label">Honey Jar:</label>
+                                <input type="text" class="form-control" id="honeyJar" name="honeyJar" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="score" class="form-label">Score:</label>
+                                <input type="text" class="form-control" id="score" name="score" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="level" class="form-label">Level:</label>
+                                <input type="text" class="form-control" id="level" name="level" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="exp" class="form-label">EXP:</label>
+                                <input type="text" class="form-control" id="exp" name="exp" readonly>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
 
       #else:
         <h2>Chào mừng đến với trang quản lý!</h2>
@@ -434,18 +485,25 @@
 
 
 <script>
-  const apiBaseUrl = "http://167.71.173.13:9000";
+  const apiBaseUrl = "http://127.0.0.1:8080";
 
   document.getElementById('logoutBtn').addEventListener('click', function(event) {
       event.preventDefault();
       window.location.href = "http://167.71.173.13:9000/login";
   });
+    
 
   document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const currentList = params.get("list");
 
     const sidebarLinks = document.querySelectorAll(".sidebar .nav-link");
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get("status");
+    
+    if(status) {
+        alert(status);
+    }
 
     sidebarLinks.forEach(link => {
       if (link.getAttribute("data-list") === currentList) {
@@ -760,7 +818,36 @@
       alert("An error occurred. Please try again.");
     }
   }
+    
+    function handleSeeDetail(event) {
+        event.preventDefault();
+        
+        const email = event.target.closest('tr').getAttribute('data-email');
 
+        fetch(`${apiBaseUrl}/user/data/${email}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('modalEmail').textContent = email;
+                
+                // Fill the form with data
+                document.getElementById('part').value = data.part;
+                document.getElementById('heart').value = data.honeyComb;
+                document.getElementById('honeyJar').value = data.honeyJar;
+                document.getElementById('score').value = data.score;
+                document.getElementById('level').value = data.level;
+                document.getElementById('exp').value = data.exp;
+                
+                // Show the modal
+                let userDetailModal = new bootstrap.Modal(document.getElementById('userDetailModal'));
+                userDetailModal.show();
+            })
+            .catch(error => console.error('Error:', error));
+    }
   
 
 </script>
